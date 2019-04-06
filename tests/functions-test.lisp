@@ -19,7 +19,6 @@
 (defun test ()
   (cxx:add-package "test" "TEST")
   (cxx:remove-package "test")
-  (delete-package "test")
   )
 
 (ok (test))

@@ -80,11 +80,13 @@
            ,(if arg-types `(cffi:foreign-funcall-pointer
                             ,thunc-ptr
                             nil
+                            :pointer ,func-ptr
                             ,@(parse-args arg-types)
                             ,@(parse-args return-type nil))
                 `(cffi:foreign-funcall-pointer 
                   ,thunc-ptr
                   nil
+                  :pointer ,func-ptr
                   ,@(parse-args return-type nil)))))))
 
 (defun parse-class (meta-ptr)
