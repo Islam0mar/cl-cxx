@@ -1,48 +1,36 @@
-<!-- # Lcm - Lightweight Communications and Marshalling
+<!-- # CL-CXX - Common Lisp and CXX interoperation 
 
-This is a Common Lisp wrapper of [LCM](https://github.com/lcm-proj/lcm)-C project for message passing and data marshalling.
-
-Most of the code is ported from [LCMCore](https://github.com/JuliaRobotics/LCMCore.jl) julia repo. with the following differences:
-
- - hash-table used for storing dimensions, types, and, fingerprints.
- - callback pass function name and message type as strings.
+This is a C++ library to be used with COMMON-LISP such as boost.python, PYBIND11, ... 
 
 ## Prerequisites
 
-- [LCM](https://github.com/lcm-proj/lcm) is installed
+- [CLCXX](https://github.com/Islam0mar/CLCXX) is installed
 
 ## Installation
 
-Clone into home/common-lisp directory. Then `asdf:test-system "lcm"`
-
-- lcm.lisp file was generated using [siwg](http://www.swig.org/).
+Clone into home/common-lisp directory. Then `asdf:test-system "cxx"`
 
 ## Supported Types
 
-* :boolean
-* :uint8
-* :sint8
-* :sint16
-* :sint32
-* :sint64
-* :float32
-* :float64
-* :string
-
-Then `:array (size)` keyword would be added for arrays
+* Fundamental types
+* Pointers
 
 ### example
 
 ```
-(deflcmstruct  example_t
-    (timestamp :sint64)
-  (position :float64 :array (3)) ;; '(size) or (size)
-  (orientation :float64 :array '(4))
-  (num_ranges :sint32)
-  (ranges :float64 :array (num_ranges))
-  (name :string)
-  (enabled :boolean))
+(cffi:define-foreign-library libclcxx
+  (:darwin "libclcxx.dylib")
+  (:unix (:or "~/common-lisp/programs/hack/clcxx/build/lib/libclcxx.so" "libclcxx.so"))
+  (t (:default "libclcxx")))
+
+(cffi:use-foreign-library libclcxx)
+(cxx:add-package "TTT" "TEST")
+
+(TTT:greet)
+
 ```
+
+
 
 ## Usage
 
@@ -50,18 +38,19 @@ See test files
 
 ### NOTE
 
-Tested on SBCL 1.4.10
+Tested on SBCL 1.4.5.debian
 
 ## TODO
 
-- [x] test publish
-- [ ] test subscribe
-- [ ] parse .lcm file
+- [x] test functions
+- [ ] classes [c++ side is done]
+- [ ] Smart pointers
+- [ ] Tuple
 - [ ] benchmark
 
 ## Copyright
 
-Copyright (c) 2018 Islam Omar (catchmefastfat@gmail.com)
+Copyright (c) 2018 Islam Omar (io1131@fayoum.edu.eg)
 
 ## License
 
