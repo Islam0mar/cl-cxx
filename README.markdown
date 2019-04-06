@@ -1,4 +1,4 @@
-<!-- # CL-CXX - Common Lisp and CXX interoperation 
+# CL-CXX - Common Lisp and CXX interoperation 
 
 This is a C++ library to be used with COMMON-LISP such as boost.python, PYBIND11, ... 
 
@@ -54,4 +54,4 @@ Copyright (c) 2018 Islam Omar (io1131@fayoum.edu.eg)
 
 ## License
 
-Licensed under the MIT License. -->
+Licensed under the MIT License.
