@@ -48,6 +48,15 @@ divided by ONE + each.
                      (subseq full-string (+ subst-point (length rem-string))))
         full-string)))
 
+
+
+(defun remove-string-after-to (string char)
+  "Returns a string within first (...) or nil"
+  (declare (type string string))
+  (if (position char string)
+      (subseq string (1+ (position char string)))
+      string))
+
 (defun required (&optional (msg "A required argument is missing.") &rest args)
   "If this ever gets called, it means something that was required was not
   supplied.  Use as default value for &key args or defstruct slots."

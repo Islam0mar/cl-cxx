@@ -1,12 +1,16 @@
 
 (in-package :cxx)
 
-(defun symbols-list (arg-types)
+(defun symbols-list (arg-types &optional (method-p nil) (class-obj nil))
   "Return a list of symbols '(V0 V1 V2 V3 ...) 
-   representing thenumber of args"
-  (if arg-types (loop for i in (split-string-by arg-types #\+)
-                   for j from 0
-                   collect (intern (concatenate 'string "V" (write-to-string j))))))
+   representing the number of args"
+  (let ((m-obj (if  method-p `(obj ,(read-from-string  class-obj))))
+        (lst (if arg-types (loop for i in (split-string-by arg-types #\+)
+                              for j from 0
+                              collect (intern (concatenate 'string "V" (write-to-string j)))))))
+    (if method-p
+        (if lst (append (list m-obj) lst) (list m-obj))
+        lst)))
 
 (defun compound-type-list (type &optional (array-p nil))
   "Returns a list of strings representing compound type"
@@ -51,7 +55,10 @@
     (if (listp parsed-type) (ecase (first parsed-type)
                               (:array (append (list (second parsed-type)) (list :count)  (list (third parsed-type))))
                               (:complex :pointer)
-                              (:pointer :pointer)
+                              (:pointer (if (equal (second parsed-type)
+                                                   :char)
+                                            :string
+                                            :pointer))
                               (:reference :pointer)
                               (:class :pointer)
                               (:struct (second parsed-type)))
@@ -59,7 +66,7 @@
 
 
 (defun parse-args (arg-types &optional (input-type-p t))
-  "return argument types (with variables if they are inputs) in a proper form"
+  "return argument types (with variables if they are inputs) in a proper list"
   (if input-type-p (loop
                       for i in (split-string-by arg-types #\+)
                       for sym in (symbols-list arg-types)
@@ -69,37 +76,94 @@
       (let ((type (cffi-type arg-types)))
         (if (listp type) type
             (list type)))))
-       
+
 (defun parse-function (meta-ptr)
   "Retruns the function def."
   (with-foreign-slots ((name method-p class-obj thunc-ptr func-ptr arg-types return-type) meta-ptr (:struct function-info))
-    (if method-p
-        `()
-        `(defun ,(read-from-string name) ,(symbols-list arg-types)
-           ;TODO: add declare type
-           ,(if arg-types `(cffi:foreign-funcall-pointer
-                            ,thunc-ptr
-                            nil
-                            :pointer ,func-ptr
-                            ,@(parse-args arg-types)
-                            ,@(parse-args return-type nil))
-                `(cffi:foreign-funcall-pointer 
-                  ,thunc-ptr
-                  nil
-                  :pointer ,func-ptr
-                  ,@(parse-args return-type nil)))))))
+    (if method-p (setf arg-types (remove-string-after-to arg-types #\+)))
+    `(progn
+       (export ,(read-from-string name))
+       (,(if method-p
+             'defmethod
+             'defun)
+         
+         ;; (defmethod balance ((account bank-account))
+         ;;   (slot-value account 'balance))
+
+         ,(read-from-string name) ,(symbols-list arg-types method-p class-obj)
+         ;; TODO: add declare type
+         ,(let ((body
+                 (if arg-types `(cffi:foreign-funcall-pointer
+                                 ,thunc-ptr
+                                 nil
+                                 :pointer ,func-ptr
+                                 ,@(if method-p
+                                       ;; cxx-ptr defined in defclass
+                                       (append '(:pointer (cxx-ptr obj)) (parse-args arg-types))
+                                       (parse-args arg-types))
+                                 ,@(parse-args return-type nil))
+                     `(cffi:foreign-funcall-pointer 
+                       ,thunc-ptr
+                       nil
+                       :pointer ,func-ptr
+                       ,@(parse-args return-type nil)))))
+            (if (and (not method-p) class-obj)
+                `(make-instance ,(read-from-string class-obj)
+                                :cxx-ptr ,body)
+                body))))))
+
+(defun parse-super-classes (s)
+  "Returns super class as symbols in a list"
+  (if s (loop
+           for i in (split-string-by s #\+)
+           collect (read-from-string i))))
+
+(defun parse-class-slots (slot-names slot-types)
+  "Returns super class as symbols in a list"
+  (loop
+     ;; TODO: use solt type and refine set,get
+     for name in (split-string-by slot-names #\+)
+     for type in (split-string-by slot-types #\+)
+     collect (read-from-string name)))
+
 
 (defun parse-class (meta-ptr)
   "Define class"
   (with-foreign-slots ((name super-classes slot-names slot-types constructor destructor) meta-ptr (:struct class-info))
-    ;TODO:
-    ))
+    ;; TODO:
+    `(progn
+       (export ,(read-from-string name))
+       (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
+         ((cxx-class-ptr
+           :acessor :cxx-ptr
+           :initform nil)
+          ,@(if slot-types (parse-class-slots slot-names slot-types)))
+         (:documentation "Cxx class stored in lisp"))
+
+       ,(if (not (cffi:null-pointer-p  constructor))
+            (let ((m-name (read-from-string (concatenate 'string "create-" name))))
+              `(progn
+                 (export ,m-name)
+                 (defun ,m-name ()
+                   "create class with defualt constructor"
+                   (make-instance ,(read-from-string name) :cxx-ptr
+                                  (cffi:foreign-funcall-pointer
+                                   ,constructor :pointer))))))
+       
+       (export destruct)
+       (defmethod destruct (obj ,(read-from-string  name))
+         "delete class" 
+         (cffi:foreign-funcall-pointer ,destructor :pointer (cxx-ptr obj) :void)))))
+
+
 
 (defun parse-constant (meta-ptr)
   "Define constant"
   (with-foreign-slots ((name value) meta-ptr (:struct constant-info))
-    ;TODO:
-    ))
+    `(progn
+       (export ,(read-from-string name))
+       (defconstant ,(read-from-string name)
+         ,(read-from-string value)))))
 
 ;; inline void lisp_error(const char *error)
 (defcallback lisp-error :void ((err :string))
@@ -109,21 +173,13 @@
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
     (0 (print "class")
-       (with-foreign-slots ((name super-classes slot-names slot-types constructor destructor) meta-ptr (:struct class-info))
-         (format t "name:~A super-classes:~A slot-names:~A slot-types:~A constructor:~A destructor:~A~%"
-                 name super-classes slot-names slot-types  constructor destructor)))
+       (print (parse-class meta-ptr)))
     (1 (print "constant")
-       (with-foreign-slots ((name value) meta-ptr (:struct constant-info))
-         (format t "name:~A value:~A~%"
-                 name value)))
+       (print (parse-constant meta-ptr)))
     (2 (print "function")
-       (eval (parse-function meta-ptr))
-       (print "~%")
-       (with-foreign-slots ((name method-p class-obj thunc-ptr func-ptr arg-types return-type) meta-ptr (:struct function-info))
-         (format t "name:~A method-p:~A class-obj:~A thunc-ptr:~A func-ptr:~A arg-types:~A return-type:~A~%"
-                 name method-p class-obj thunc-ptr func-ptr arg-types return-type)))))
+       (print (parse-function meta-ptr)))))
 
-    
+
 ;; bool remove_package(char *pack_name)
 (defcfun ("remove_package" remove-c-package) :bool
   (name :string))
@@ -148,11 +204,11 @@
   "Register lisp package with pack-name 
             from func-name defined in CXX lib"
   (declare (type string pack-name func-name))
-  (let ((curr-pack *package*))
+  (let ((curr-pack (package-name *package*)))
     (make-package pack-name)
-    (use-package pack-name)
+    (eval `(in-package ,pack-name))
     (register-package pack-name (foreign-symbol-pointer func-name))
-    (use-package curr-pack)))
+    (eval `(in-package ,curr-pack))))
 
 (defun remove-package (pack-name)
   (if (remove-c-package pack-name)

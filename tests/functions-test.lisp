@@ -17,8 +17,8 @@
 (ok (cxx:init))
 
 (defun test ()
-  (cxx:add-package "test" "TEST")
-  (cxx:remove-package "test")
+  (cxx:add-package "TEST" "TEST")
+  (cxx:remove-package "TEST")
   )
 
 (ok (test))
