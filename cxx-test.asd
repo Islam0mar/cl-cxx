@@ -1,6 +1,6 @@
 #|
   This file is a part of lcm project.
-  Copyright (c) 2018 Islam Omar (catchmefastfat@gmail.com)
+  Copyright (c) 2018 Islam Omar (io1131@fayoum.edu.eg)
 |#
 
 (defpackage :cxx/test/system

@@ -1,13 +1,8 @@
 #|
-  This file is a part of cl-lcm project.
-  Copyright (c) 2018 Islam Omar (catchmefastfat@gmail.com)
+  This file is a part of cl-cxx project.
+  Copyright (c) 2018 Islam Omar (io1131@fayoum.edu.eg)
 |#
 
-#|
-  Lightweight Communications and Marshalling
-
-  Author: Islam Omar (io1131@fayoum.edu.eg)
-|#
 
 (defpackage :cxx/system
   (:use :cl :asdf))
