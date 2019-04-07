@@ -82,7 +82,7 @@
   (with-foreign-slots ((name method-p class-obj thunc-ptr func-ptr arg-types return-type) meta-ptr (:struct function-info))
     (if method-p (setf arg-types (remove-string-after-to arg-types #\+)))
     `(progn
-       (export ,(read-from-string name))
+       (export ',(read-from-string name))
        (,(if method-p
              'defmethod
              'defun)
@@ -132,7 +132,7 @@
   (with-foreign-slots ((name super-classes slot-names slot-types constructor destructor) meta-ptr (:struct class-info))
     ;; TODO:
     `(progn
-       (export ,(read-from-string name))
+       ;; (export ,(read-from-string name))
        (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
          ((cxx-class-ptr
            :acessor :cxx-ptr
@@ -143,14 +143,14 @@
        ,(if (not (cffi:null-pointer-p  constructor))
             (let ((m-name (read-from-string (concatenate 'string "create-" name))))
               `(progn
-                 (export ,m-name)
+                 (export ',m-name)
                  (defun ,m-name ()
                    "create class with defualt constructor"
                    (make-instance ,(read-from-string name) :cxx-ptr
                                   (cffi:foreign-funcall-pointer
                                    ,constructor :pointer))))))
        
-       (export destruct)
+       (export 'destruct)
        (defmethod destruct (obj ,(read-from-string  name))
          "delete class" 
          (cffi:foreign-funcall-pointer ,destructor :pointer (cxx-ptr obj) :void)))))
@@ -161,7 +161,7 @@
   "Define constant"
   (with-foreign-slots ((name value) meta-ptr (:struct constant-info))
     `(progn
-       (export ,(read-from-string name))
+       (export ',(read-from-string name))
        (defconstant ,(read-from-string name)
          ,(read-from-string value)))))
 
@@ -173,11 +173,11 @@
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
     (0 (print "class")
-       (print (parse-class meta-ptr)))
+       (eval (parse-class meta-ptr)))
     (1 (print "constant")
-       (print (parse-constant meta-ptr)))
+       (eval (parse-constant meta-ptr)))
     (2 (print "function")
-       (print (parse-function meta-ptr)))))
+       (eval (parse-function meta-ptr)))))
 
 
 ;; bool remove_package(char *pack_name)
@@ -205,10 +205,12 @@
             from func-name defined in CXX lib"
   (declare (type string pack-name func-name))
   (let ((curr-pack (package-name *package*)))
-    (make-package pack-name)
-    (eval `(in-package ,pack-name))
-    (register-package pack-name (foreign-symbol-pointer func-name))
-    (eval `(in-package ,curr-pack))))
+    (unwind-protect
+         (progn
+           (make-package pack-name)
+           (eval `(in-package ,pack-name))
+           (register-package pack-name (foreign-symbol-pointer func-name)))
+      (eval `(in-package ,curr-pack)))))
 
 (defun remove-package (pack-name)
   (if (remove-c-package pack-name)

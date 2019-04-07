@@ -4,12 +4,18 @@
         ))
 (in-package :cxx/test)
 
-(cffi:define-foreign-library libclcxx
-  (:darwin "libclcxx.dylib")
-  (:unix (:or "~/common-lisp/programs/hack/clcxx/build/lib/libclcxx.so" "libclcxx.so"))
-  (t (:default "libclcxx")))
+(pushnew (merge-pathnames #p"ros/lisp-demo/lib/" (user-homedir-pathname))
+         cffi:*foreign-library-directories*
+         :test #'equal)
 
-(cffi:use-foreign-library libclcxx)
+(cffi:define-foreign-library my-lib
+  ;; (:darwin (:or "libbipedal.3.dylib" "libbipedal.dylib"))
+  ;; (:unix (:or "libbipedal.so.3" "libbipedal.so"))
+  (t (:default "libbipedal")))
+
+
+(cffi:use-foreign-library my-lib)
+
 
 (plan 1)
 
@@ -23,7 +29,7 @@
 
 (ok (test))
 
-(cffi:close-foreign-library 'libclcxx)
+(cffi:close-foreign-library 'my-lib)
 
 (finalize)
 
