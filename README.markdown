@@ -17,20 +17,66 @@ Clone into home/common-lisp directory. Then `asdf:test-system "cxx"`
 
 ### example
 
+```c++
+#include <string>
+#include "clcxx/clcxx.hpp"
+
+std::string greet() { return "Hello, World"; }
+int Int(int x) { return x + 100; }
+float Float(float y) { return y + 100.34; }
+auto gr(std::complex<float> x) { return x; }
+std::string hi(char* s) { return std::string("hi, " + std::string(s)); }
+void ref_int(int& x) { x += 30; }
+void ref_class(xx& x) { x.y = 1000000; }
+class xx {
+ public:
+  xx(int xx, int yy) : y(yy), x(xx) {}
+  std::string greet() { return "Hello, World"; }
+  int y;
+  int x;
+};
+
+CLCXX_PACKAGE TEST(clcxx::Package& pack) {
+  pack.defun("hi", &hi);
+  pack.defun("test-int", &Int);
+  pack.defun("greet", &greet);
+  pack.defun("test-float", &Float);
+  pack.defun("test-complex", &gr);
+  pack.defun("ref-int", &ref_int);
+  pack.defun("ref-class", &ref_class);
+  pack.defclass<xx, false>("xx")
+      .defmethod("foo", &xx::greet)
+      .constructor<int, int>();
+}
 ```
-(cffi:define-foreign-library libclcxx
-  (:darwin "libclcxx.dylib")
-  (:unix (:or "~/common-lisp/programs/hack/clcxx/build/lib/libclcxx.so" "libclcxx.so"))
-  (t (:default "libclcxx")))
+compiled as shared lib. libtest
 
-(cffi:use-foreign-library libclcxx)
-(cxx:add-package "TTT" "TEST")
+in lisp
 
-(TTT:greet)
+```common lisp
+(defpackage cxx/test
+  (:use :cl
+        ))
+(in-package :cxx/test)
 
+(pushnew (merge-pathnames #p"ros/lisp-demo/lib/" (user-homedir-pathname))
+         cffi:*foreign-library-directories*
+         :test #'equal)
+
+(cffi:define-foreign-library my-lib
+  (t (:default "libtest")))
+
+
+(cffi:use-foreign-library my-lib)
+
+(cxx:init)
+
+(cxx:add-package "TEST" "TEST")
+
+(test:greet)
+
+(test:hi "Cxx")
 ```
-
-
 
 ## Usage
 
