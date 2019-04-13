@@ -135,7 +135,7 @@
        ;; (export ,(read-from-string name))
        (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
          ((cxx-class-ptr
-           :acessor :cxx-ptr
+           :accessor :cxx-ptr
            :initform nil)
           ,@(if slot-types (parse-class-slots slot-names slot-types)))
          (:documentation "Cxx class stored in lisp"))
@@ -150,8 +150,8 @@
                                   (cffi:foreign-funcall-pointer
                                    ,constructor :pointer))))))
        
-       (export 'destruct)
-       (defmethod destruct (obj ,(read-from-string  name))
+       (export ',(read-from-string "destruct"))
+       (defmethod destruct ((obj ,(read-from-string  name)))
          "delete class" 
          (cffi:foreign-funcall-pointer ,destructor :pointer (cxx-ptr obj) :void)))))
 
@@ -173,11 +173,11 @@
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
     (0 (print "class")
-       (eval (parse-class meta-ptr)))
+       (print (parse-class meta-ptr)))
     (1 (print "constant")
-       (eval (parse-constant meta-ptr)))
+       (print (parse-constant meta-ptr)))
     (2 (print "function")
-       (eval (parse-function meta-ptr)))))
+       (print (parse-function meta-ptr)))))
 
 
 ;; bool remove_package(char *pack_name)
