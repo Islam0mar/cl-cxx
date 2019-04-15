@@ -8,12 +8,12 @@
 
 (in-package :cxx/test/system)
 
-(defsystem "cxx-test"
-  :defsystem-depends-on ("prove-asdf")
+(defsystem :cxx-test
+  :defsystem-depends-on (:prove-asdf)
   :author "Islam Omar"
   :license "MIT"
-  :depends-on ("cxx"
-               "prove")
+  :depends-on (:cxx
+               :prove)
   :components ((:module "tests"
                 :components
                 ((:test-file "functions-test"))))

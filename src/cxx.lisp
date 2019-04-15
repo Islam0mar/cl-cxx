@@ -67,12 +67,13 @@
 
 (defun parse-args (arg-types &optional (input-type-p t))
   "return argument types (with variables if they are inputs) in a proper list"
-  (if input-type-p (loop
-                      for i in (split-string-by arg-types #\+)
-                      for sym in (symbols-list arg-types)
-                      as type = (cffi-type i) then (cffi-type i)
-                      append (if (listp type) `( ,@type ,sym)
-                                 `( ,type ,sym)))
+  (if input-type-p (if arg-types (loop
+                                    for i in (split-string-by arg-types #\+)
+                                    for sym in (symbols-list arg-types)
+                                    as type = (cffi-type i) then (cffi-type i)
+                                    append (if (listp type) `( ,@type ,sym)
+                                               `( ,type ,sym)))
+                       nil)
       (let ((type (cffi-type arg-types)))
         (if (listp type) type
             (list type)))))
@@ -93,22 +94,18 @@
          ,(read-from-string name) ,(symbols-list arg-types method-p class-obj)
          ;; TODO: add declare type
          ,(let ((body
-                 (if arg-types `(cffi:foreign-funcall-pointer
-                                 ,thunc-ptr
-                                 nil
-                                 :pointer ,func-ptr
-                                 ,@(if method-p
-                                       ;; cxx-ptr defined in defclass
-                                       (append '(:pointer (cxx-ptr obj)) (parse-args arg-types))
-                                       (parse-args arg-types))
-                                 ,@(parse-args return-type nil))
-                     `(cffi:foreign-funcall-pointer 
-                       ,thunc-ptr
-                       nil
-                       :pointer ,func-ptr
-                       ,@(parse-args return-type nil)))))
+                 `(cffi:foreign-funcall-pointer
+                   ,thunc-ptr
+                   nil
+                   :pointer ,func-ptr
+                   ,@(if method-p
+                         ;; cxx-ptr defined in defclass
+                         (append '(:pointer (cxx-ptr obj)) (parse-args arg-types))
+                         (parse-args arg-types))
+                   ,@(parse-args return-type nil))))
+            ;; When constructor return a class
             (if (and (not method-p) class-obj)
-                `(make-instance ,(read-from-string class-obj)
+                `(make-instance ',(read-from-string class-obj)
                                 :cxx-ptr ,body)
                 body))))))
 
@@ -135,7 +132,8 @@
        ;; (export ,(read-from-string name))
        (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
          ((cxx-class-ptr
-           :accessor :cxx-ptr
+           :accessor cxx-ptr
+           :initarg :cxx-ptr
            :initform nil)
           ,@(if slot-types (parse-class-slots slot-names slot-types)))
          (:documentation "Cxx class stored in lisp"))
@@ -146,14 +144,15 @@
                  (export ',m-name)
                  (defun ,m-name ()
                    "create class with defualt constructor"
-                   (make-instance ,(read-from-string name) :cxx-ptr
+                   (make-instance ',(read-from-string name) :cxx-ptr
                                   (cffi:foreign-funcall-pointer
-                                   ,constructor :pointer))))))
+                                   ,constructor nil :pointer))))))
        
-       (export ',(read-from-string "destruct"))
-       (defmethod destruct ((obj ,(read-from-string  name)))
-         "delete class" 
-         (cffi:foreign-funcall-pointer ,destructor :pointer (cxx-ptr obj) :void)))))
+       (export ',(read-from-string (concatenate 'string "destruct-" name)))
+       (defmethod ,(read-from-string (concatenate 'string "destruct-" name))
+           ((obj ,(read-from-string  name)))
+         "delete class"
+         (cffi:foreign-funcall-pointer ,destructor nil :pointer (cxx-ptr obj) :void)))))
 
 
 
@@ -173,11 +172,14 @@
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
     (0 (print "class")
-       (print (parse-class meta-ptr)))
+       (print (parse-class meta-ptr))
+       (eval (parse-class meta-ptr)))
     (1 (print "constant")
-       (print (parse-constant meta-ptr)))
+       (print (parse-constant meta-ptr))
+       (eval (parse-constant meta-ptr)))
     (2 (print "function")
-       (print (parse-function meta-ptr)))))
+       (print (parse-function meta-ptr))
+       (eval (parse-function meta-ptr)))))
 
 
 ;; bool remove_package(char *pack_name)

@@ -9,8 +9,8 @@
 
 (in-package :cxx/system)
 
-(defsystem "cxx"
-  :version "0.8"
+(defsystem :cxx
+  :version "1.0"
   :author "Islam Omar"
   :license "MIT"
   :depends-on (:cffi :trivial-garbage)
