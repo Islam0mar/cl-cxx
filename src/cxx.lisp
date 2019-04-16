@@ -144,7 +144,8 @@
                    (make-instance ',(read-from-string name) :cxx-ptr
                                   (cffi:foreign-funcall-pointer
                                    ,constructor nil :pointer))))))
-       
+       (import 'cxx::cxx-ptr)
+       (export 'cxx-ptr)
        (export ',(read-from-string (concatenate 'string "destruct-" name)))
        (defmethod ,(read-from-string (concatenate 'string "destruct-" name))
            ((obj ,(read-from-string  name)))

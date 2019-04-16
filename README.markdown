@@ -89,7 +89,8 @@ Tested on SBCL 1.4.5.debian
 ## TODO
 
 - [x] test functions
-- [ ] classes [c++ side is done]
+- [x] classes
+- [x] references
 - [ ] Smart pointers
 - [ ] Tuple
 - [ ] benchmark
