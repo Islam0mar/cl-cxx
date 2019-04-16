@@ -14,6 +14,9 @@ Clone into home/common-lisp directory. Then `asdf:test-system "cxx"`
 
 * Fundamental types
 * Pointers
+* Classes can add public members and functions
+* POD
+* functions, std::function and lambda
 
 ### example
 
