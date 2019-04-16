@@ -50,8 +50,8 @@ divided by ONE + each.
 
 
 
-(defun remove-string-after-to (string char)
-  "Returns a string within first (...) or nil"
+(defun left-trim-string-to (string char)
+  "Returns a string trimmed to char exclusive"
   (declare (type string string))
   (if (position char string)
       (subseq string (1+ (position char string)))

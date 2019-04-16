@@ -81,33 +81,32 @@
 (defun parse-function (meta-ptr)
   "Retruns the function def."
   (with-foreign-slots ((name method-p class-obj thunc-ptr func-ptr arg-types return-type) meta-ptr (:struct function-info))
-    (if method-p (setf arg-types (remove-string-after-to arg-types #\+)))
-    `(progn
-       (export ',(read-from-string name))
-       (,(if method-p
-             'defmethod
-             'defun)
-         
-         ;; (defmethod balance ((account bank-account))
-         ;;   (slot-value account 'balance))
+    (let ((f-arg-types (if method-p
+                           (left-trim-string-to arg-types #\+)
+                           arg-types)))
+      `(progn
+         (export ',(read-from-string name))
+         (,(if method-p
+               'defmethod
+               'defun)
 
-         ,(read-from-string name) ,(symbols-list arg-types method-p class-obj)
-         ;; TODO: add declare type
-         ,(let ((body
-                 `(cffi:foreign-funcall-pointer
-                   ,thunc-ptr
-                   nil
-                   :pointer ,func-ptr
-                   ,@(if method-p
-                         ;; cxx-ptr defined in defclass
-                         (append '(:pointer (cxx-ptr obj)) (parse-args arg-types))
-                         (parse-args arg-types))
-                   ,@(parse-args return-type nil))))
-            ;; When constructor return a class
-            (if (and (not method-p) class-obj)
-                `(make-instance ',(read-from-string class-obj)
-                                :cxx-ptr ,body)
-                body))))))
+           ,(read-from-string name) ,(symbols-list f-arg-types method-p class-obj)
+           ;; TODO: add declare type
+           ,(let ((body
+                   `(cffi:foreign-funcall-pointer
+                     ,thunc-ptr
+                     nil
+                     :pointer ,func-ptr
+                     ,@(if method-p
+                           ;; cxx-ptr defined in defclass
+                           (append '(:pointer (cxx-ptr obj)) (parse-args f-arg-types))
+                           (parse-args f-arg-types))
+                     ,@(parse-args return-type nil))))
+              ;; When constructor return a class
+              (if (and (not method-p) class-obj)
+                  `(make-instance ',(read-from-string class-obj)
+                                  :cxx-ptr ,body)
+                  body)))))))
 
 (defun parse-super-classes (s)
   "Returns super class as symbols in a list"
@@ -127,9 +126,7 @@
 (defun parse-class (meta-ptr)
   "Define class"
   (with-foreign-slots ((name super-classes slot-names slot-types constructor destructor) meta-ptr (:struct class-info))
-    ;; TODO:
     `(progn
-       ;; (export ,(read-from-string name))
        (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
          ((cxx-class-ptr
            :accessor cxx-ptr
@@ -172,14 +169,15 @@
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
     (0 (print "class")
-       (print (parse-class meta-ptr))
-       (eval (parse-class meta-ptr)))
+       (eval (parse-class meta-ptr))
+       (print (parse-class meta-ptr)))
     (1 (print "constant")
-       (print (parse-constant meta-ptr))
-       (eval (parse-constant meta-ptr)))
+       (eval (parse-constant meta-ptr))
+       (print (parse-constant meta-ptr)))
     (2 (print "function")
-       (print (parse-function meta-ptr))
-       (eval (parse-function meta-ptr)))))
+       (eval (parse-function meta-ptr))
+       (print (parse-function meta-ptr)))))
+
 
 
 ;; bool remove_package(char *pack_name)
