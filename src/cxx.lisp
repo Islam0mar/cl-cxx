@@ -71,8 +71,22 @@
                                     for i in (split-string-by arg-types #\+)
                                     for sym in (symbols-list arg-types)
                                     as type = (cffi-type i) then (cffi-type i)
-                                    append (if (listp type) `( ,@type ,sym)
-                                               `( ,type ,sym)))
+                                    append
+                                      (let* ((parsed-type (parse-type i))
+                                             (name (cond 
+                                                     ;; in class
+                                                     ((and (listp parsed-type)
+                                                           (second parsed-type)
+                                                           (equal (first parsed-type) :class)) (second parsed-type))
+                                                     ;; in class reference
+                                                     ((and (listp parsed-type)
+                                                           (if (listp (second parsed-type)) (second (second  parsed-type)))
+                                                           (if (listp parsed-type) (equal (first parsed-type) :reference))
+                                                           (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class)))
+                                                      (second (second  parsed-type))))))
+                                        (if (listp type) `( ,@type ,sym)
+                                            `( ,type ,(if name `(cxx-ptr ,sym)
+                                                          sym)))))
                        nil)
       (let ((type (cffi-type arg-types)))
         (if (listp type) type
@@ -102,11 +116,37 @@
                            (append '(:pointer (cxx-ptr obj)) (parse-args f-arg-types))
                            (parse-args f-arg-types))
                      ,@(parse-args return-type nil))))
-              ;; When constructor return a class
-              (if (and (not method-p) class-obj)
-                  `(make-instance ',(read-from-string class-obj)
-                                  :cxx-ptr ,body)
-                  body)))))))
+              ;; Wrap return class
+              (let* ((parsed-type (parse-type return-type))
+                     (name (cond 
+                                ;; constructor
+                                ((and (not method-p) class-obj)
+                                 (read-from-string class-obj))
+                                ;; return class
+                                ((and (listp parsed-type)
+                                      (second parsed-type)
+                                      (equal (first parsed-type) :class)) (second parsed-type))
+                                ;; return class reference
+                                ((and (listp parsed-type)
+                                      (if (listp (second parsed-type)) (second (second  parsed-type)))
+                                      (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class))
+                                      (if (listp parsed-type) (equal (first parsed-type) :reference)))
+                                 (second (second  parsed-type))))))
+                (if name
+                    `(let* ((ptr ,body)
+                            (obj (handler-case (make-instance ',name
+                                                              :cxx-ptr ptr)
+                                   (error (err) (,(read-from-string (concatenate 'string "destruct-" (string name)))
+                                                  ptr)
+                                          (error err)))))
+                       (tg:finalize obj (lambda ()
+                                          (,(read-from-string (concatenate 'string
+                                                                           "destruct-"
+                                                                           (string name)))
+                                            ptr)))
+                       obj)
+                    ;; non-class return type
+                    body))))))))
 
 (defun parse-super-classes (s)
   "Returns super class as symbols in a list"
@@ -135,22 +175,34 @@
           ,@(if slot-types (parse-class-slots slot-names slot-types)))
          (:documentation "Cxx class stored in lisp"))
 
+       (import 'cxx::cxx-ptr)
+       (export 'cxx-ptr)
+       
+       (export ',(read-from-string (concatenate 'string "destruct-" name)))
+       (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class-ptr)
+         "delete class"
+         (if (not  (cffi:null-pointer-p class-ptr))
+             (cffi:foreign-funcall-pointer ,destructor nil :pointer class-ptr :void)))
+
        ,(if (not (cffi:null-pointer-p  constructor))
             (let ((m-name (read-from-string (concatenate 'string "create-" name))))
               `(progn
                  (export ',m-name)
                  (defun ,m-name ()
                    "create class with defualt constructor"
-                   (make-instance ',(read-from-string name) :cxx-ptr
-                                  (cffi:foreign-funcall-pointer
-                                   ,constructor nil :pointer))))))
-       (import 'cxx::cxx-ptr)
-       (export 'cxx-ptr)
-       (export ',(read-from-string (concatenate 'string "destruct-" name)))
-       (defmethod ,(read-from-string (concatenate 'string "destruct-" name))
-           ((obj ,(read-from-string  name)))
-         "delete class"
-         (cffi:foreign-funcall-pointer ,destructor nil :pointer (cxx-ptr obj) :void)))))
+                   (let* ((ptr (cffi:foreign-funcall-pointer
+                                ,constructor nil :pointer))
+                          (obj (handler-case (make-instance ',(read-from-string name)
+                                                            :cxx-ptr ptr)
+                                 (error (err) (,(read-from-string (concatenate 'string "destruct-" name))
+                                                ptr)
+                                        (error err)))))
+                     (tg:finalize obj (lambda ()
+                                        (,(read-from-string (concatenate 'string
+                                                                         "destruct-"
+                                                                         name))
+                                          ptr)))
+                     obj))))))))
 
 
 
