@@ -99,7 +99,10 @@
                            (left-trim-string-to arg-types #\+)
                            arg-types)))
       `(progn
-         (export ',(read-from-string name))
+         ;; don't export functions starting with '%'
+         ,(if (equal #\% (char name 0))
+              nil
+              `(export ',(read-from-string name)))
          (,(if method-p
                'defmethod
                'defun)
@@ -119,19 +122,19 @@
               ;; Wrap return class
               (let* ((parsed-type (parse-type return-type))
                      (name (cond 
-                                ;; constructor
-                                ((and (not method-p) class-obj)
-                                 (read-from-string class-obj))
-                                ;; return class
-                                ((and (listp parsed-type)
-                                      (second parsed-type)
-                                      (equal (first parsed-type) :class)) (second parsed-type))
-                                ;; return class reference
-                                ((and (listp parsed-type)
-                                      (if (listp (second parsed-type)) (second (second  parsed-type)))
-                                      (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class))
-                                      (if (listp parsed-type) (equal (first parsed-type) :reference)))
-                                 (second (second  parsed-type))))))
+                             ;; constructor
+                             ((and (not method-p) class-obj)
+                              (read-from-string class-obj))
+                             ;; return class
+                             ((and (listp parsed-type)
+                                   (second parsed-type)
+                                   (equal (first parsed-type) :class)) (second parsed-type))
+                             ;; return class reference
+                             ((and (listp parsed-type)
+                                   (if (listp (second parsed-type)) (second (second  parsed-type)))
+                                   (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class))
+                                   (if (listp parsed-type) (equal (first parsed-type) :reference)))
+                              (second (second  parsed-type))))))
                 (if name
                     `(let* ((ptr ,body)
                             (obj (handler-case (make-instance ',name
