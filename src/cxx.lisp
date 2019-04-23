@@ -224,15 +224,21 @@
 ;; void send_data(MetaData *M, uint8_t n)
 (defcallback reg-data :void ((meta-ptr :pointer) (type :uint8))
   (ecase type
-    (0 (print "class")
-       (eval (parse-class meta-ptr))
-       (print (parse-class meta-ptr)))
-    (1 (print "constant")
-       (eval (parse-constant meta-ptr))
-       (print (parse-constant meta-ptr)))
-    (2 (print "function")
-       (eval (parse-function meta-ptr))
-       (print (parse-function meta-ptr)))))
+    (0
+     ;; (print "class")
+     ;; (print (parse-class meta-ptr))
+     (eval (parse-class meta-ptr)))
+       
+    (1
+     ;; (print "constant")
+     ;; (print (parse-constant meta-ptr))
+     (eval (parse-constant meta-ptr)))
+    
+    (2
+     ;; (print "function")
+     ;; (print (parse-function meta-ptr))
+     (eval (parse-function meta-ptr)))))
+       
 
 
 
