@@ -48,6 +48,7 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defun("ref-int", &ref_int);
   pack.defun("ref-class", &ref_class);
   pack.defclass<xx, false>("xx")
+      .member("y", &xx::y)
       .defmethod("foo", &xx::greet)
       .constructor<int, int>();
 }
