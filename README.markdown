@@ -1,6 +1,6 @@
-# CL-CXX - Common Lisp and CXX interoperation 
+# CL-CXX - Common Lisp wrappers for C++
 
-This is a C++ library to be used with COMMON-LISP such as boost.python, PYBIND11, ... 
+This library provides an interface to C++ from lisp. It was inspired by Julia's [libcxxwrap](https://github.com/JuliaInterop/libcxxwrap-julia), and that projects documentation is a good reference for the architecture and ideas in this library.
 
 ## Prerequisites
 
@@ -18,8 +18,10 @@ Clone into home/common-lisp directory. Then `asdf:test-system "cxx"`
 * POD
 * functions, std::function and lambda
 
-### example
+## A Small Example
+First you will need to create a C++ glue library that CFF will use when calling C++ functions from Lisp. Compile the code below as a shared library say, libtest.so or libtest.dylib. The commands to do this will vary by compiler and operating system. For testing, it is always good to put the library in the same directory as the lisp code, and ensure that you set the current working directory in your Lisp image. CFFI can take some fiddling to find all the dependencies. This is not unique to this project, all Lisp C/C++ bindings with CFFI have the same requirements.
 
+### The C++ Side of the Equation
 ```c++
 #include <string>
 #include "clcxx/clcxx.hpp"
@@ -53,23 +55,27 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
       .constructor<int, int>();
 }
 ```
-compiled as shared lib. libtest
 
-in lisp
+### The Lisp Side of Things
+You should walk through the commands below in the REPL to get an idea of how the bindings work. Before you start, ensure you have the dependencies loaded:
+
+```common lisp
+(ql:quickload "cffi")
+(ql:quickload "cxx")
+```
 
 ```common lisp
 (defpackage cxx/test
-  (:use :cl
-        ))
+  (:use :cl))
 (in-package :cxx/test)
 
+;;; Change the pathname to match that of your system.
 (pushnew (merge-pathnames #p"ros/lisp-demo/lib/" (user-homedir-pathname))
          cffi:*foreign-library-directories*
          :test #'equal)
 
 (cffi:define-foreign-library my-lib
   (t (:default "libtest")))
-
 
 (cffi:use-foreign-library my-lib)
 
@@ -84,11 +90,13 @@ in lisp
 
 ## Usage
 
-See test files
+See test files or the [cl-cxx-eigen](https://github.com/Islam0mar/cl-cxx-eigen) project for further examples.
 
 ### NOTE
 
-Tested on SBCL 1.4.5.debian
+Tested on:
+* SBCL 1.4.5 on debian
+* CCL  1.12  on MacOS 10.13.6
 
 ## TODO
 

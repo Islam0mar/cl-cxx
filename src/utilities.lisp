@@ -1,5 +1,4 @@
-;; macros
-;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*- File: utilities.lisp
+;;;; -*- Mode: LISP; Syntax: ANSI-Common-Lisp; Package: CXX -*-
 
 ;;;; Basic utility functions and macros, used throughout the code.
 
@@ -26,7 +25,7 @@ divided by ONE + each.
      for i from (position #\( string) below (length string)
      for j = (position #\( string) then j
      for k = (char string i) then (char string i)
-     for l = 0 then l     
+     for l = 0 then l
      do
        (case k
          (#\( (setf l (1+ l)))
@@ -37,9 +36,9 @@ divided by ONE + each.
 (defun remove-string (rem-string full-string &key from-end (test #'eql)
                       test-not (start1 0) end1 (start2 0) end2 key)
   "returns full-string with rem-string removed"
-  (let ((subst-point (search rem-string full-string 
+  (let ((subst-point (search rem-string full-string
                              :from-end from-end
-                             :test test :test-not test-not
+                             :test test
                              :start1 start1 :end1 end1
                              :start2 start2 :end2 end2 :key key)))
     (if subst-point
@@ -47,8 +46,6 @@ divided by ONE + each.
                      (subseq full-string 0 subst-point)
                      (subseq full-string (+ subst-point (length rem-string))))
         full-string)))
-
-
 
 (defun left-trim-string-to (string char)
   "Returns a string trimmed to char exclusive"
