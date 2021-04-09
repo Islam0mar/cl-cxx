@@ -1,4 +1,4 @@
-# Updadate: [CL-CXX-JIT](https://github.com/Islam0mar/CL-CXX-JIT) is the new project to make the process easier example: `(from '("<cmath>") 'import '("static_cast<double(*)(double)>(std::sin)" . "cpp-sin")),` then can be called with`(cpp-sin 0d0)`.
+# Update: [CL-CXX-JIT](https://github.com/Islam0mar/CL-CXX-JIT) is the new project to make the process easier example: `(from '("<cmath>") 'import '("static_cast<double(*)(double)>(std::sin)" . "cpp-sin")),` then can be called with`(cpp-sin 0d0)`.
 # CL-CXX - Common Lisp wrappers for C++
 
 This library provides an interface to C++ from lisp. It was inspired by Julia's [libcxxwrap](https://github.com/JuliaInterop/libcxxwrap-julia), and that projects documentation is a good reference for the architecture and ideas in this library.
