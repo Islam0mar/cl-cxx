@@ -119,7 +119,7 @@ pack.defclass<A, false>("A")
 ```
 - lisp
 ```common lisp
-(class:create-A2)
+(defvar my-a-class (class:create-A2 10 20))
 ```
 ## Usage
 
