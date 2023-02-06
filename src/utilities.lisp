@@ -33,8 +33,13 @@ divided by ONE + each.
        (if (= l 0)
            (return (subseq string j (1+ i))))))
 
-(defun remove-string (rem-string full-string &key from-end (test #'eql)
-                      test-not (start1 0) end1 (start2 0) end2 key)
+(defun remove-string (rem-string full-string &key from-end
+                                               (test #'eql)
+                                               (start1 0)
+                                               end1
+                                               (start2 0)
+                                               end2
+                                               key)
   "returns full-string with rem-string removed"
   (let ((subst-point (search rem-string full-string
                              :from-end from-end
@@ -58,5 +63,3 @@ divided by ONE + each.
   "If this ever gets called, it means something that was required was not
   supplied.  Use as default value for &key args or defstruct slots."
   (apply #'error msg args))
-
-
