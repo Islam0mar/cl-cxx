@@ -2,7 +2,7 @@
 (in-package :cxx)
 
 (defun symbols-list (arg-types &optional (method-p nil) (class-obj nil))
-  "Return a list of symbols '(V0 V1 V2 V3 ...) 
+  "Return a list of symbols '(V0 V1 V2 V3 ...)
    representing the number of args"
   (let ((m-obj (if  method-p `(obj ,(read-from-string  class-obj))))
         (lst (if arg-types (loop for i in (split-string-by arg-types #\+)
@@ -28,7 +28,7 @@
 (defun parse-type (type)
   "Returns cffi-type as a keyword
       or list of keywords"
-  (declare (type string type))
+  (declare (string type))
   (if (equal (subseq type 0 1) "(")
       ;; compound type
       (cond ((if (>= (length type) 7) (equal (subseq type 0 7) "(:array") nil)
@@ -36,6 +36,8 @@
             ((if (>= (length type) 9) (equal (subseq type 0 9) "(:pointer") nil)
              (mapcar #'parse-type (compound-type-list type)))
             ((if (>= (length type) 11) (equal (subseq type 0 11) "(:reference") nil)
+             (mapcar #'parse-type (compound-type-list type)))
+            ((if (>= (length type) 17) (equal (subseq type 0 17) "(:const-reference") nil)
              (mapcar #'parse-type (compound-type-list type)))
             ((if (>= (length type) 9) (equal (subseq type 0 9) "(:complex") nil)
              (mapcar #'parse-type (compound-type-list type)))
@@ -60,6 +62,7 @@
                                             :string
                                             :pointer))
                               (:reference :pointer)
+                              (:const-reference :pointer) ;; TODO:add const
                               (:class :pointer)
                               (:struct (second parsed-type)))
         parsed-type)))
@@ -73,7 +76,7 @@
                                     as type = (cffi-type i) then (cffi-type i)
                                     append
                                       (let* ((parsed-type (parse-type i))
-                                             (name (cond 
+                                             (name (cond
                                                      ;; in class
                                                      ((and (listp parsed-type)
                                                            (second parsed-type)
@@ -81,7 +84,8 @@
                                                      ;; in class reference
                                                      ((and (listp parsed-type)
                                                            (if (listp (second parsed-type)) (second (second  parsed-type)))
-                                                           (if (listp parsed-type) (equal (first parsed-type) :reference))
+                                                           (if (listp parsed-type) (or (equal (first parsed-type) :reference)
+                                                                                       (equal (first parsed-type) :const-reference)))
                                                            (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class)))
                                                       (second (second  parsed-type))))))
                                         (if (listp type) `( ,@type ,sym)
@@ -94,7 +98,7 @@
 
 (defun parse-function (meta-ptr)
   "Retruns the function def."
-  (with-foreign-slots ((name method-p class-obj thunc-ptr func-ptr arg-types return-type) meta-ptr (:struct function-info))
+  (with-foreign-slots ((name method-p class-obj func-ptr arg-types return-type) meta-ptr (:struct function-info))
     (let ((f-arg-types (if method-p
                            (left-trim-string-to arg-types #\+)
                            arg-types)))
@@ -111,9 +115,8 @@
            ;; TODO: add declare type
            ,(let ((body
                    `(cffi:foreign-funcall-pointer
-                     ,thunc-ptr
+                     ,func-ptr
                      nil
-                     :pointer ,func-ptr
                      ,@(if method-p
                            ;; cxx-ptr defined in defclass
                            (append '(:pointer (cxx-ptr obj)) (parse-args f-arg-types))
@@ -121,7 +124,7 @@
                      ,@(parse-args return-type nil))))
               ;; Wrap return class
               (let* ((parsed-type (parse-type return-type))
-                     (name (cond 
+                     (name (cond
                              ;; constructor
                              ((and (not method-p) class-obj)
                               (read-from-string class-obj))
@@ -133,7 +136,8 @@
                              ((and (listp parsed-type)
                                    (if (listp (second parsed-type)) (second (second  parsed-type)))
                                    (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class))
-                                   (if (listp parsed-type) (equal (first parsed-type) :reference)))
+                                   (if (listp parsed-type) (or (equal (first parsed-type) :reference)
+                                                               (equal (first parsed-type) :const-reference))))
                               (second (second  parsed-type))))))
                 (if name
                     `(let* ((ptr ,body)
@@ -160,7 +164,7 @@
 (defun parse-class-slots (slot-names slot-types)
   "Returns super class as symbols in a list"
   (loop
-     ;; TODO: use solt type and refine set,get
+     ;; TODO: use solt type and define set,get
      for name in (split-string-by slot-names #\+)
      for type in (split-string-by slot-types #\+)
      collect (read-from-string name)))
@@ -174,13 +178,14 @@
          ((cxx-class-ptr
            :accessor cxx-ptr
            :initarg :cxx-ptr
-           :initform nil)
-          ,@(if slot-types (parse-class-slots slot-names slot-types)))
+           :initform (required "Use Class constructor function."))
+          ;; TODO: add slots
+          ;; ,@(if slot-types (parse-class-slots slot-names slot-types)))
          (:documentation "Cxx class stored in lisp"))
 
        (import 'cxx::cxx-ptr)
        (export 'cxx-ptr)
-       
+
        (export ',(read-from-string (concatenate 'string "destruct-" name)))
        (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class-ptr)
          "delete class"
@@ -228,17 +233,17 @@
      ;; (print "class")
      ;; (print (parse-class meta-ptr))
      (eval (parse-class meta-ptr)))
-       
+
     (1
      ;; (print "constant")
      ;; (print (parse-constant meta-ptr))
      (eval (parse-constant meta-ptr)))
-    
+
     (2
      ;; (print "function")
      ;; (print (parse-function meta-ptr))
      (eval (parse-function meta-ptr)))))
-       
+
 
 
 
@@ -258,12 +263,20 @@
   (name :string)
   (pack-ptr :pointer))
 
+;; size_t used_bytes_size();
+(defcfun ("used_bytes_size" used-bytes-size) :size)
+;; size_t max_stack_bytes_size();
+(defcfun ("max_stack_bytes_size" max-stack-bytes-size) :size)
+;; bool delete_string(char *string);
+(defcfun ("delete_string" destruct-cpp-string) :bool
+  (string-to-be-deleted :string))
+
 ;; Init. clcxx
 (defun init ()
   (clcxx-init (callback lisp-error) (callback reg-data)))
 
 (defun add-package (pack-name func-name)
-  "Register lisp package with pack-name 
+  "Register lisp package with pack-name
             from func-name defined in CXX lib"
   (declare (type string pack-name func-name))
   (let ((curr-pack (package-name *package*)))
@@ -277,5 +290,3 @@
 (defun remove-package (pack-name)
   (if (remove-c-package pack-name)
       (delete-package pack-name)))
-
-
