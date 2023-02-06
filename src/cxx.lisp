@@ -178,7 +178,7 @@
          ((cxx-class-ptr
            :accessor cxx-ptr
            :initarg :cxx-ptr
-           :initform (required "Use Class constructor function."))
+           :initform (required "Use Class constructor function.")))
           ;; TODO: add slots
           ;; ,@(if slot-types (parse-class-slots slot-names slot-types)))
          (:documentation "Cxx class stored in lisp"))
