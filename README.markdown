@@ -53,15 +53,15 @@ class xx {
 
 CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defun("hi", &hi);
-  pack.defun("test-int", &Int);
-  pack.defun("greet", &greet);
-  pack.defun("test-float", &Float);
-  pack.defun("test-complex", &gr);
-  pack.defun("ref-int", &ref_int);
-  pack.defun("ref-class", &ref_class);
+  pack.defun("test-int", F_PTR(&Int));
+  pack.defun("greet", F_PTR(&greet));
+  pack.defun("test-float", F_PTR(&Float));
+  pack.defun("test-complex", F_PTR(&gr));
+  pack.defun("ref-int", F_PTR(&ref_int));
+  pack.defun("ref-class", F_PTR(&ref_class));
   pack.defclass<xx, false>("xx")
       .member("y", &xx::y)
-      .defmethod("foo", &xx::greet)
+      .defmethod("foo", F_PTR(&xx::greet))
       .constructor<int, int>();
 }
 ```
