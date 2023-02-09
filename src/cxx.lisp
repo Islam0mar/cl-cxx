@@ -1,6 +1,33 @@
 
 (in-package :cxx)
 
+;; bool remove_package(char *pack_name)
+(defcfun ("remove_package" remove-c-package) :bool
+  (name :string))
+
+;; bool clcxx_init(void (*error_handler)(char *),
+;;                      void (*reg_data_callback)(MetaData *, uint8_t))
+(defcfun ("clcxx_init" clcxx-init) :bool
+  (err-callback :pointer)
+  (reg-data-callback :pointer))
+
+;; bool register_lisp_package(const char *cl_pack,
+;;                                  void (*regfunc)(clcxx::Package &))
+(defcfun ("register_package" register-package) :bool
+  (name :string)
+  (pack-ptr :pointer))
+
+;; size_t used_bytes_size();
+(defcfun ("used_bytes_size" number-of-allocated-bytes) :size)
+
+;; size_t max_stack_bytes_size();
+(defcfun ("max_stack_bytes_size" max-stack-bytes-size) :size)
+
+;; bool delete_string(char *string);
+(defcfun ("delete_string" destruct-string) :bool
+  (string-to-be-deleted :string))
+
+
 (defun symbols-list (arg-types &optional (method-p nil) (class-obj nil))
   "Return a list of symbols '(V0 V1 V2 V3 ...)
    representing the number of args"
@@ -113,7 +140,7 @@
 
            ,(read-from-string name) ,(symbols-list f-arg-types method-p class-obj)
            ;; TODO: add declare type
-           ,(let ((body
+           ,(let ((return-val
                    `(cffi:foreign-funcall-pointer
                      ,func-ptr
                      nil
@@ -124,7 +151,7 @@
                      ,@(parse-args return-type nil))))
               ;; Wrap return class
               (let* ((parsed-type (parse-type return-type))
-                     (name (cond
+                     (objT (cond
                              ;; constructor
                              ((and (not method-p) class-obj)
                               (read-from-string class-obj))
@@ -139,21 +166,31 @@
                                    (if (listp parsed-type) (or (equal (first parsed-type) :reference)
                                                                (equal (first parsed-type) :const-reference))))
                               (second (second  parsed-type))))))
-                (if name
-                    `(let* ((ptr ,body)
-                            (obj (handler-case (make-instance ',name
-                                                              :cxx-ptr ptr)
-                                   (error (err) (,(read-from-string (concatenate 'string "destruct-" (string name)))
-                                                  ptr)
-                                          (error err)))))
-                       (tg:finalize obj (lambda ()
-                                          (,(read-from-string (concatenate 'string
-                                                                           "destruct-"
-                                                                           (string name)))
-                                            ptr)))
-                       obj)
-                    ;; non-class return type
-                    body))))))))
+                (cond
+                  ;; add finalizer to class object
+                  (objT
+                       (let ((destructor
+                               (read-from-string
+                                (concatenate 'string
+                                             "destruct-" (string objT)))))
+                       `(let* ((ptr ,return-val)
+                               (obj (handler-case
+                                        (make-instance ',objT
+                                                       :cxx-ptr ptr)
+                                      (error (err)
+                                        (,destructor ptr)
+                                        (error err)))))
+                          (tg:finalize obj (lambda ()
+                                             (,destructor ptr)))
+                          obj)))
+                  ;; add finalizer to string
+                  ((equal parsed-type :string)
+                   (tg:finalize return-val
+                                (lambda ()
+                                  (cxx:destruct-string return-val)))
+                   return-val)
+                  ;; non-class return type
+                  (t return-val)))))))))
 
 (defun parse-super-classes (s)
   "Returns super class as symbols in a list"
@@ -193,7 +230,9 @@
              (cffi:foreign-funcall-pointer ,destructor nil :pointer class-ptr :void)))
 
        ,(if (not (cffi:null-pointer-p  constructor))
-            (let ((m-name (read-from-string (concatenate 'string "create-" name))))
+            (let ((m-name (read-from-string (concatenate 'string "create-" name)))
+                  (destructor (read-from-string (concatenate 'string
+                                                             "destruct-" name))))
               `(progn
                  (export ',m-name)
                  (defun ,m-name ()
@@ -202,14 +241,10 @@
                                 ,constructor nil :pointer))
                           (obj (handler-case (make-instance ',(read-from-string name)
                                                             :cxx-ptr ptr)
-                                 (error (err) (,(read-from-string (concatenate 'string "destruct-" name))
-                                                ptr)
+                                 (error (err) (,destructor ptr)
                                         (error err)))))
                      (tg:finalize obj (lambda ()
-                                        (,(read-from-string (concatenate 'string
-                                                                         "destruct-"
-                                                                         name))
-                                          ptr)))
+                                        (,destructor ptr)))
                      obj))))))))
 
 
@@ -245,39 +280,13 @@
      (eval (parse-function meta-ptr)))))
 
 
-
-
-;; bool remove_package(char *pack_name)
-(defcfun ("remove_package" remove-c-package) :bool
-  (name :string))
-
-;; bool clcxx_init(void (*error_handler)(char *),
-;;                      void (*reg_data_callback)(MetaData *, uint8_t))
-(defcfun ("clcxx_init" clcxx-init) :bool
-  (err-callback :pointer)
-  (reg-data-callback :pointer))
-
-;; bool register_lisp_package(const char *cl_pack,
-;;                                  void (*regfunc)(clcxx::Package &))
-(defcfun ("register_package" register-package) :bool
-  (name :string)
-  (pack-ptr :pointer))
-
-;; size_t used_bytes_size();
-(defcfun ("used_bytes_size" used-bytes-size) :size)
-;; size_t max_stack_bytes_size();
-(defcfun ("max_stack_bytes_size" max-stack-bytes-size) :size)
-;; bool delete_string(char *string);
-(defcfun ("delete_string" destruct-cpp-string) :bool
-  (string-to-be-deleted :string))
-
 ;; Init. clcxx
 (defun init ()
   (clcxx-init (callback lisp-error) (callback reg-data)))
 
 (defun add-package (pack-name func-name)
   "Register lisp package with pack-name
-            from func-name defined in CXX lib"
+            from func-name defined in ClCxx lib"
   (declare (type string pack-name func-name))
   (let ((curr-pack (package-name *package*)))
     (unwind-protect

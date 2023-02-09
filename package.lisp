@@ -4,6 +4,7 @@
   (:export
    #:add-package
    #:remove-package
+   #:number-of-allocated-bytes
+   #:destruct-string
    #:init)
   )
-  
