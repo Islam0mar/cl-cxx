@@ -172,23 +172,30 @@
                        (let ((destructor
                                (read-from-string
                                 (concatenate 'string
-                                             "destruct-" (string objT)))))
+                                             "destruct-" (string objT))))
+                             (destruct-ptr (read-from-string
+                                 (concatenate 'string
+                                              "destruct-ptr-"
+                                              (string objT)))))
                        `(let* ((ptr ,return-val)
                                (obj (handler-case
                                         (make-instance ',objT
                                                        :cxx-ptr ptr)
                                       (error (err)
-                                        (,destructor ptr)
+                                        (,destruct-ptr ptr)
                                         (error err)))))
                           (tg:finalize obj (lambda ()
-                                             (,destructor ptr)))
+                                             (,destruct-ptr ptr)))
                           obj)))
                   ;; add finalizer to string
-                  ((equal parsed-type :string)
-                   (tg:finalize return-val
-                                (lambda ()
-                                  (cxx:destruct-string return-val)))
-                   return-val)
+                  ((equal parsed-type :string+ptr)
+                   `(let* ((val ,return-val)
+                           (str (car val))
+                           (ptr (cadr val)))
+                      (tg:finalize str
+                                   (lambda ()
+                                     (cxx:destruct-string ptr)))
+                   str))
                   ;; non-class return type
                   (t return-val)))))))))
 
@@ -224,15 +231,28 @@
        (export 'cxx-ptr)
 
        (export ',(read-from-string (concatenate 'string "destruct-" name)))
-       (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class-ptr)
+       (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class)
          "delete class"
-         (if (not  (cffi:null-pointer-p class-ptr))
-             (cffi:foreign-funcall-pointer ,destructor nil :pointer class-ptr :void)))
+         (let ((ptr (cxx-ptr class)))
+           (if (not  (cffi:null-pointer-p ptr))
+               (cffi:foreign-funcall-pointer ,destructor
+                                             nil :pointer ptr
+                                                 :void)))
+         (setf (cxx-ptr class) (cffi:null-pointer)))
+       (defun ,(read-from-string
+                (concatenate 'string "destruct-ptr-" name)) (class-ptr)
+         "delete class pointer"
+           (if (not  (cffi:null-pointer-p class-ptr))
+               (cffi:foreign-funcall-pointer ,destructor
+                                             nil :pointer class-ptr
+                                                 :void)))
 
        ,(if (not (cffi:null-pointer-p  constructor))
             (let ((m-name (read-from-string (concatenate 'string "create-" name)))
-                  (destructor (read-from-string (concatenate 'string
-                                                             "destruct-" name))))
+                  (destruct-ptr (read-from-string
+                                 (concatenate 'string
+                                              "destruct-ptr-"
+                                              name))))
               `(progn
                  (export ',m-name)
                  (defun ,m-name ()
@@ -241,10 +261,10 @@
                                 ,constructor nil :pointer))
                           (obj (handler-case (make-instance ',(read-from-string name)
                                                             :cxx-ptr ptr)
-                                 (error (err) (,destructor ptr)
+                                 (error (err) (,destruct-ptr ptr)
                                         (error err)))))
                      (tg:finalize obj (lambda ()
-                                        (,destructor ptr)))
+                                        (,destruct-ptr ptr)))
                      obj))))))))
 
 
