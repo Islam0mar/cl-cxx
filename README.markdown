@@ -25,8 +25,11 @@ Clone into home/common-lisp directory. Then `asdf:test-system "cxx"`
 | fundamental      | same             | copy value        |
 | POD struct       | same             | copy value        |
 | std::string      | :string          | allocate c string |
-| reference        | :pointer         | allocate refernced object |
-| class            | :pointer         | :pointer          |
+| const char*      | :string          | allocate c string |
+| reference        | :pointer         | copy pointer address |
+| class            | :pointer         | allocate class object |
+
+for allocated memory a finalizer is defined for these objects.
 
 ## A Small Example
 First you will need to create a C++ glue library that CFF will use when calling C++ functions from Lisp. Compile the code below as a shared library say, libtest.so or libtest.dylib. The commands to do this will vary by compiler and operating system. For testing, it is always good to put the library in the same directory as the lisp code, and ensure that you set the current working directory in your Lisp image. CFFI can take some fiddling to find all the dependencies. This is not unique to this project, all Lisp C/C++ bindings with CFFI have the same requirements.
@@ -62,7 +65,8 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defclass<xx, false>("xx")
       .member("y", &xx::y)
       .defmethod("foo", F_PTR(&xx::greet))
-      .constructor<int, int>();
+      .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
+      .constructor<int, int>(); // could be .constructor<int, int>("make-my-xx-class"); 
 }
 ```
 
@@ -112,14 +116,14 @@ class A {
 };
 CLCXX_PACKAGE class(clcxx::Package& pack) {
 pack.defclass<A, false>("A")
-      .constructor<int, int>()
+      .constructor<int, int>("create-my-A")
       .member("y", &A::y)
       .member("x", &A::x);
 }
 ```
 - lisp
 ```common lisp
-(defvar my-a-class (class:create-A2 10 20))
+(defvar my-a-class (class:create-my-A 10 20))
 ```
 ## Usage
 
@@ -146,7 +150,9 @@ Tested on:
 
 ## TODO
 
-- [x] test functions
+- [ ] test functions
+- [ ] code refactor
+- [ ] global objects sometimes don't call its finalizers!
 - [x] classes
 - [x] references
 - [ ] Smart pointers
