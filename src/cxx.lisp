@@ -169,24 +169,20 @@
                 (cond
                   ;; add finalizer to class object
                   (objT
-                       (let ((destructor
-                               (read-from-string
-                                (concatenate 'string
-                                             "destruct-" (string objT))))
-                             (destruct-ptr (read-from-string
-                                 (concatenate 'string
-                                              "destruct-ptr-"
-                                              (string objT)))))
-                       `(let* ((ptr ,return-val)
-                               (obj (handler-case
-                                        (make-instance ',objT
-                                                       :cxx-ptr ptr)
-                                      (error (err)
-                                        (,destruct-ptr ptr)
-                                        (error err)))))
-                          (tg:finalize obj (lambda ()
-                                             (,destruct-ptr ptr)))
-                          obj)))
+		   (let ((destruct-ptr (read-from-string
+					(concatenate 'string
+						     "destruct-ptr-"
+						     (string objT)))))
+		     `(let* ((ptr ,return-val)
+			     (obj (handler-case
+				      (make-instance ',objT
+						     :cxx-ptr ptr)
+				    (error (err)
+				      (,destruct-ptr ptr)
+				      (error err)))))
+			(tg:finalize obj (lambda ()
+					   (,destruct-ptr ptr)))
+			obj)))
                   ;; add finalizer to string
                   ((equal parsed-type :string+ptr)
                    `(let* ((val ,return-val)
