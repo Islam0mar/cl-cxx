@@ -22,7 +22,7 @@
   - [[https://github.com/Islam0mar/CLCXX][CLCXX]]
 
      A C​++ library which gets compiled once and installed systemwide,
-     visible by the C++ compiler.
+     visible by the C++ toolchain.
 
   - [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
 
