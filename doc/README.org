@@ -53,6 +53,7 @@
     for CFFI related packages.
 
   The following diagram shows the relation of the different parts:
+  
   [[./block-diagram.svg]]
 
   
