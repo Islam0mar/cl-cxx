@@ -91,7 +91,7 @@
                               (:reference :pointer)
                               (:const-reference :pointer) ;; TODO:add const
                               (:class :pointer)
-                              (:struct (second parsed-type)))
+                              (:struct parsed-type))
         parsed-type)))
 
 
@@ -115,13 +115,12 @@
                                                                                        (equal (first parsed-type) :const-reference)))
                                                            (if (listp (second parsed-type)) (equal (first (second  parsed-type)) :class)))
                                                       (second (second  parsed-type))))))
-                                        (if (listp type) `( ,@type ,sym)
+                                        (if (listp type) `( ,type ,sym)
                                             `( ,type ,(if name `(cxx-ptr ,sym)
                                                           sym)))))
                        nil)
       (let ((type (cffi-type arg-types)))
-        (if (listp type) type
-            (list type)))))
+        (list type))))
 
 (defun parse-function (meta-ptr)
   "Retruns the function def."
@@ -209,60 +208,69 @@
      for type in (split-string-by slot-types #\+)
      collect (read-from-string name)))
 
+(defun parse-cstruct-slots (slot-names slot-types)
+  "Returns super class as symbols in a list"
+  (loop
+     for name in (split-string-by slot-names #\+)
+     for type in (split-string-by slot-types #\+)
+     collect (list name (cffi-type type))))
+
 
 (defun parse-class (meta-ptr)
   "Define class"
   (with-foreign-slots ((name super-classes slot-names slot-types constructor destructor) meta-ptr (:struct class-info))
-    `(progn
-       (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
-         ((cxx-class-ptr
-           :accessor cxx-ptr
-           :initarg :cxx-ptr
-           :initform (required "Use Class constructor function.")))
-          ;; TODO: add slots
-          ;; ,@(if slot-types (parse-class-slots slot-names slot-types)))
-         (:documentation "Cxx class stored in lisp"))
+    (if (cffi:null-pointer-p destructor) ;; c struct
+        `(cffi:defcstruct ,(read-from-string name)
+           ,@(if slot-types (parse-cstruct-slots slot-names slot-types)))
+        `(progn
+           (defclass ,(read-from-string name) ,(parse-super-classes super-classes)
+             ((cxx-class-ptr
+               :accessor cxx-ptr
+               :initarg :cxx-ptr
+               :initform (required "Use Class constructor function.")))
+             ;; TODO: add slots
+             ;; ,@(if slot-types (parse-class-slots slot-names slot-types)))
+             (:documentation "Cxx class stored in lisp"))
 
-       (import 'cxx::cxx-ptr)
-       (export 'cxx-ptr)
+           (import 'cxx::cxx-ptr)
+           (export 'cxx-ptr)
 
-       (export ',(read-from-string (concatenate 'string "destruct-" name)))
-       (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class)
-         "delete class"
-         (let ((ptr (cxx-ptr class)))
-           (if (not  (cffi:null-pointer-p ptr))
-               (cffi:foreign-funcall-pointer ,destructor
-                                             nil :pointer ptr
-                                                 :void)))
-         (setf (cxx-ptr class) (cffi:null-pointer)))
-       (defun ,(read-from-string
-                (concatenate 'string "destruct-ptr-" name)) (class-ptr)
-         "delete class pointer"
-           (if (not  (cffi:null-pointer-p class-ptr))
-               (cffi:foreign-funcall-pointer ,destructor
-                                             nil :pointer class-ptr
-                                                 :void)))
+           (export ',(read-from-string (concatenate 'string "destruct-" name)))
+           (defun ,(read-from-string (concatenate 'string "destruct-" name)) (class)
+             "delete class"
+             (let ((ptr (cxx-ptr class)))
+               (if (not  (cffi:null-pointer-p ptr))
+                   (cffi:foreign-funcall-pointer ,destructor
+                                                 nil :pointer ptr
+                                                     :void)))
+             (setf (cxx-ptr class) (cffi:null-pointer)))
+           (defun ,(read-from-string
+                    (concatenate 'string "destruct-ptr-" name)) (class-ptr)
+             "delete class pointer"
+             (if (not  (cffi:null-pointer-p class-ptr))
+                 (cffi:foreign-funcall-pointer ,destructor
+                                               nil :pointer class-ptr
+                                                   :void)))
 
-       ,(if (not (cffi:null-pointer-p  constructor))
-            (let ((m-name (read-from-string (concatenate 'string "create-" name)))
-                  (destruct-ptr (read-from-string
-                                 (concatenate 'string
-                                              "destruct-ptr-"
-                                              name))))
-              `(progn
-                 (export ',m-name)
-                 (defun ,m-name ()
-                   "create class with defualt constructor"
-                   (let* ((ptr (cffi:foreign-funcall-pointer
-                                ,constructor nil :pointer))
-                          (obj (handler-case (make-instance ',(read-from-string name)
-                                                            :cxx-ptr ptr)
-                                 (error (err) (,destruct-ptr ptr)
-                                        (error err)))))
-                     (tg:finalize obj (lambda ()
-                                        (,destruct-ptr ptr)))
-                     obj))))))))
-
+           ,(if (not (cffi:null-pointer-p  constructor))
+                (let ((m-name (read-from-string (concatenate 'string "create-" name)))
+                      (destruct-ptr (read-from-string
+                                     (concatenate 'string
+                                                  "destruct-ptr-"
+                                                  name))))
+                  `(progn
+                     (export ',m-name)
+                     (defun ,m-name ()
+                       "create class with defualt constructor"
+                       (let* ((ptr (cffi:foreign-funcall-pointer
+                                    ,constructor nil :pointer))
+                              (obj (handler-case (make-instance ',(read-from-string name)
+                                                                :cxx-ptr ptr)
+                                     (error (err) (,destruct-ptr ptr)
+                                       (error err)))))
+                         (tg:finalize obj (lambda ()
+                                            (,destruct-ptr ptr)))
+                         obj)))))))))
 
 
 (defun parse-constant (meta-ptr)
