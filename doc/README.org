@@ -61,9 +61,9 @@
   etc. is *not* done on the Lisp side, as it's normally done when
   directly working with standard CFFI, but rather on the C​++ side,
   with the translations, name mangling, etc. done automatically by
-  CLCXX and cl-cxx. The two functions taking care of translating the
-  compiled C​++ definitions into cffi are =(cxx:init)= and
-  =(cxx:add-package...)=
+  CLCXX and cl-cxx. The two Common Lisp functions taking care of
+  translating the compiled C​++ definitions into cffi are =(cxx:init)=
+  and =(cxx:add-package...)=
 
 * Examples
 
