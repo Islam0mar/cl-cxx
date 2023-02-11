@@ -27,8 +27,8 @@
     custom C​++ library (see below) to CFFI code suitable to be used
     directly from Common Lisp.
 
-  In addition the targeted C++ Library (if any) and its header files
-  will also be needed.
+  In addition additional existing C++ Libraries and their header files
+  can be included in case they are targeted.
   
 ** Custom parts
 
@@ -36,15 +36,18 @@
 
   - A custom C​++ library
 
-    This contains the C​++ code to be exposed to Lisp, the API
-    bindings, package name definitions for the Lisp side, the Lisp
-    names of functions, methods, member functions, etc...
-
+    This contains the C​++ code to be exposed to Lisp, custom
+    definitions or glue code to existing libraries, the API bindings,
+    package name definitions for the Lisp side, the Lisp names of
+    functions, methods, member functions, etc...
+  
   - The custom Common Lisp code
 
     This contains the code to load the foreign libraries and
     initialize the cl-cxx system and package definitions from the C++
-    lib to be accessible by Lisp.
+    lib to be accessible by Lisp. In addition this code can also
+    contain macros and such to make the API "lispier", as it is common
+    for CFFI related packages.
 
   The following diagram shows the relation of the different parts:
   [[./block-diagram.svg]]
