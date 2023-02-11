@@ -51,10 +51,10 @@
 
   
   Note that with this design, the definition of functions, structs,
-  etc. is *not* done directly on the Lisp side, as it's normally done
-  when directly working with standard CFFI, but rather on the C​++
-  side, with the translations, name mangling, etc. done automatically
-  by CLCXX and cl-cxx.
+  etc. is *not* done on the Lisp side, as it's normally done when
+  directly working with standard CFFI, but rather on the C​++ side,
+  with the translations, name mangling, etc. done automatically by
+  CLCXX and cl-cxx.
 
 * Examples
   
