@@ -88,7 +88,7 @@ reference to the file CMakeLists.txt as in a normal C++ project. See
 the commented parts of CMakeLists.txt for an example.
 
 The C​++ source file is located in =custom-lib/src/my-lib.cpp= Here are
-it's contents:
+its contents:
 
 #+BEGIN_SRC c
 
