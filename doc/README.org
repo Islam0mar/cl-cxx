@@ -2,6 +2,6 @@
 
   This library provides an interface to C++ from lisp. It was inspired
   by Julia's libcxxwrap and provides a similar functionality as
-  [pybind11](https://github.com/pybind/pybind11).
+  [[https://github.com/pybind/pybind11][pybind11]].
   
 * 
