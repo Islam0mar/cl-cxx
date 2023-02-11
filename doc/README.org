@@ -60,10 +60,22 @@
   directly working with standard CFFI, but rather on the C​++ side,
   with the translations, name mangling, etc. done automatically by
   CLCXX and cl-cxx. The two functions taking care of translating the
-  C​++ definitions into cffi are =(cxx:init)= and
+  compiled C​++ definitions into cffi are =(cxx:init)= and
   =(cxx:add-package...)=
 
 * Examples
+
+  The =example= folder contains a full example of all needed steps.
+  The following steps are explained using linux commands. Please
+  translate them into the corresponding commands for your OS.
+
+  - Copy the folder with all contents to a location of your choice:
+
+#+BEGIN_SRC bash
+
+$ cp -R examples /tmp/
+
+#+END_SRC bash
 
   Following is a full example
 Examples - 2 or 3 end to end examples, with extensive documentation
