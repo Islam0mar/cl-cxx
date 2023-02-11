@@ -6,12 +6,13 @@
   to deal with C++ extensions from Common Lisp like class definitions,
   their instantiation, accessing and defining member functions,
   etc. [[https://github.com/Islam0mar/cl-cxx][cl-cxx]] is an attempt to step in and facilitate easy interfacing
-  from Common Lisp to C++ libs.
+  from Common Lisp to C​++ libs. It uses CFFI under the hood, but
+  generates its definitions automagically from C​++ code provided by
+  the user.
 
   It was inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar
   functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for the Common Lisp community.
   
-
 * Architecture
 
 ** Provided parts
