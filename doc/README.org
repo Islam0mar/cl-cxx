@@ -12,18 +12,14 @@
 
 * Architecture
 
-  [[https://github.com/Islam0mar/cl-cxx][cl-cxx]] consists of three parts:
+** Provided parts
+
+  The provided architecture consists of two parts:
 
   - [[https://github.com/Islam0mar/CLCXX][CLCXX]]
 
      A C​++ library which gets compiled once and installed systemwide,
      visible by the C++ compiler.
-
-
-  - A custom C​++ library
-
-     Written by the end user which contains the
-     API bindings to the targeted C​++ library to be exposed to lisp.
 
   - [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
 
@@ -31,9 +27,26 @@
      custom C​++ library to CFFI code suitable to be used directly from
      Common Lisp.
 
-  The following diagram shows the relation of the different parts of
-  cl-cxx.
+  In addition the targeted C++ Library plus its header files will also
+  be needed.
+  
+** Custom parts
 
+   There are also two user-defined parts:
+
+  - A custom C​++ library
+
+    This contains the API bindings to the targeted C​++ library to be
+    exposed to Lisp, package name definitions for the Lisp side, the
+    Lisp names of functions, methods, member functions, etc...
+
+  - The custom Common Lisp code
+
+    This contains the code to load the foreign libraries and
+    initialize the cxx system and package definitions from the C++ lib
+    to be accessible by Lisp.
+
+  The following diagram shows the relation of the different parts:
   [[./block-diagram.svg]]
 
   
