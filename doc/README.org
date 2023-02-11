@@ -65,8 +65,8 @@
 
 * Examples
 
-  The =example= folder contains a full example of all needed steps.
-  The following steps are explained using linux commands. Please
+  The =example= folder contains a full example. The necessary steps to
+  make the example work are explained using linux commands. Please
   translate them into the corresponding commands for your OS.
 
   - Copy the folder with all contents to a location of your choice:
