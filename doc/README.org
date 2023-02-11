@@ -9,7 +9,7 @@
   from Common Lisp to C++ libs.
 
   It was inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar
-  functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for Common Lisp.
+  functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for the Common Lisp community.
   
 
 * Architecture
