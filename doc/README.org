@@ -14,18 +14,18 @@
 
   [[https://github.com/Islam0mar/cl-cxx][cl-cxx]] consists of three parts:
 
-  1. [[https://github.com/Islam0mar/CLCXX][CLCXX]]
+  - [[https://github.com/Islam0mar/CLCXX][CLCXX]]
 
      A C​++ library which gets compiled once and installed systemwide,
      visible by the C++ compiler.
 
 
-  2. A custom C​++ library
+  - A custom C​++ library
 
      Written by the end user which contains the
      API bindings to the targeted C​++ library to be exposed to lisp.
 
-  3. [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
+  - [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
 
      The Common Lisp part, which translates the definitions in the
      custom C​++ library to CFFI code suitable to be used directly from
