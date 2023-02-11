@@ -67,9 +67,10 @@
 
 * Examples
 
-  The =example= folder contains a full example. The necessary steps to
-  make the example work are explained using linux commands. Please
-  translate them into the corresponding commands for your OS.
+  The =example= folder contains a full example. It can be used as a
+  skeleton for a new project. The necessary steps to make the example
+  work are explained using linux commands. Please translate them into
+  the corresponding commands for your OS.
 
   - Copy the folder with all contents to a location of your choice:
 
@@ -78,13 +79,13 @@
 $ cp -R examples /tmp/
 $ cd /tmp/examples
 
-#+END_SRC bash
+#+END_SRC
 
 The necessary files for the custom C++ library are located in the
 subfolder =custom-lib=. If additional libs are needed, put their
-header files into the =custom-lib/include= and add their reference to
-the file CMakeLists.txt as in a normal C++ project. See the commented
-parts of CMakeLists.txt for an example.
+header files into the =custom-lib/include= folder and add their
+reference to the file CMakeLists.txt as in a normal C++ project. See
+the commented parts of CMakeLists.txt for an example.
 
 The C​++ source file is located in =custom-lib/src/my-lib.cpp= Here are
 it's contents:
@@ -93,10 +94,23 @@ it's contents:
 
 include <clcxx.h>
 
-#+END_SRC bash
+#+END_SRC
 
 
 Build the custom C++ library
+
+#+BEGIN_SRC bash
+
+$ cd /tmp/examples/my-lib
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+
+#+END_SRC
+
+This should compile a shared library named =myLib.so= and put it into
+the folder =/tmp/example/my-lib/lib/=
 
   Following is a full example
 Examples - 2 or 3 end to end examples, with extensive documentation
