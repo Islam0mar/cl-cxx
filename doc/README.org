@@ -23,12 +23,12 @@
 
   - [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
 
-     The Common Lisp part, which translates the definitions in the
-     custom C​++ library to CFFI code suitable to be used directly from
-     Common Lisp.
+    The Common Lisp part, which translates the definitions of the
+    custom C​++ library (see below) to CFFI code suitable to be used
+    directly from Common Lisp.
 
-  In addition the targeted C++ Library plus its header files will also
-  be needed.
+  In addition the targeted C++ Library (if any) and its header files
+  will also be needed.
   
 ** Custom parts
 
@@ -36,15 +36,15 @@
 
   - A custom C​++ library
 
-    This contains the API bindings to the targeted C​++ library to be
-    exposed to Lisp, package name definitions for the Lisp side, the
-    Lisp names of functions, methods, member functions, etc...
+    This contains the C​++ code to be exposed to Lisp, the API
+    bindings, package name definitions for the Lisp side, the Lisp
+    names of functions, methods, member functions, etc...
 
   - The custom Common Lisp code
 
     This contains the code to load the foreign libraries and
-    initialize the cxx system and package definitions from the C++ lib
-    to be accessible by Lisp.
+    initialize the cl-cxx system and package definitions from the C++
+    lib to be accessible by Lisp.
 
   The following diagram shows the relation of the different parts:
   [[./block-diagram.svg]]
@@ -54,10 +54,17 @@
   etc. is *not* done directly on the Lisp side, as it's normally done
   when directly working with standard CFFI, but rather on the C​++
   side, with the translations, name mangling, etc. done automatically
-  by cl-cxx.
+  by CLCXX and cl-cxx.
 
+* Examples
   
-Architecture - Block diagram, sequence diagrams for the calls from Lisp to C++
 Examples - 2 or 3 end to end examples, with extensive documentation
-Future Direction - What is planned next, if anything. E.g. Auto-wrap style wrapping so you can point to a header. Roadmap for the C++ features that are missing.
-Help Wanted - what can contributors help with, by skill level.
+
+* Future Direction
+
+  none yet...
+  
+* Help Wanted
+
+  please send bug reports, code to custom libs using the system,
+  etc. for expanding the user base.
