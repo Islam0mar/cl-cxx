@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="158.70274mm"
-   height="117.41812mm"
-   viewBox="0 0 158.70274 117.41812"
+   width="169.46239mm"
+   height="128.9319mm"
+   viewBox="0 0 169.46238 128.9319"
    version="1.1"
    id="svg5"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
@@ -26,22 +26,35 @@
      inkscape:showpageshadow="2"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="1.1893044"
-     inkscape:cx="430.08333"
-     inkscape:cy="130.32828"
+     inkscape:cx="124.8629"
+     inkscape:cy="155.55311"
      inkscape:window-width="1920"
      inkscape:window-height="1058"
      inkscape:window-x="0"
      inkscape:window-y="2"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer2" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Ebene 3"
+     transform="translate(5.2074641,6.7794389)">
+    <rect
+       style="opacity:1;fill:#ececec;stroke:#e6e6e6;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers stroke fill"
+       id="rect2086"
+       width="168.93323"
+       height="128.40274"
+       x="-4.9428806"
+       y="-6.5148554" />
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Ebene 2"
      style="display:inline"
-     transform="translate(-14.940922,-57.57272)">
+     transform="translate(-9.7334579,-50.793281)">
     <rect
        style="fill:#d5ffd5;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers stroke fill"
        id="rect1389"
@@ -86,7 +99,7 @@
      inkscape:groupmode="layer"
      id="layer1"
      style="display:inline"
-     transform="translate(-14.940922,-57.57272)">
+     transform="translate(-9.7334579,-50.793281)">
     <g
        id="g1372"
        transform="translate(0,-10.583334)">
@@ -224,7 +237,7 @@
     </g>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:0.793749, 0.793749;stroke-dashoffset:0;stroke-opacity:1"
-       d="m 82.223619,57.57272 v 112.7021"
+       d="M 82.223619,50.958137 V 179.66753"
        id="path590"
        sodipodi:nodetypes="cc" />
     <rect

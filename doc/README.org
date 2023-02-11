@@ -54,12 +54,13 @@
   etc. is *not* done on the Lisp side, as it's normally done when
   directly working with standard CFFI, but rather on the C​++ side,
   with the translations, name mangling, etc. done automatically by
-  CLCXX and cl-cxx. The two functions taking care of the cffi
-  definitions in Common Lisp are =(cxx:init)= and
+  CLCXX and cl-cxx. The two functions taking care of translating the
+  C​++ definitions into cffi are =(cxx:init)= and
   =(cxx:add-package...)=
 
 * Examples
-  
+
+  Following is a full example
 Examples - 2 or 3 end to end examples, with extensive documentation
 
 * Future Direction
