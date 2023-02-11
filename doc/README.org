@@ -30,8 +30,8 @@
     custom C​++ library (see below) to CFFI code suitable to be used
     directly from Common Lisp.
 
-  In addition additional existing C++ Libraries and their header files
-  can be included in case they are targeted.
+  In addition existing C++ Libraries and their header files can be
+  included in case they are targeted.
   
 ** Custom parts
 
