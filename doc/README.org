@@ -20,7 +20,9 @@
      visible by the C++ compiler.
 
 
-  2. A custom C​++ library written by the end user which contains the
+  2. A custom C​++ library
+
+     Written by the end user which contains the
      API bindings to the targeted C​++ library to be exposed to lisp.
 
   3. [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
