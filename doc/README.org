@@ -58,10 +58,10 @@
 
   
   Note that with this design, the definition of functions, structs,
-  etc. is *not* done on the Lisp side, as it's normally done when
-  directly working with standard CFFI, but rather on the C​++ side,
-  with the translations, name mangling, etc. done automatically by
-  CLCXX and cl-cxx. The two Common Lisp functions taking care of
+  etc. is *not* done by the user on the Lisp side, as it is the case
+  when working with standard CFFI directly, but rather on the C​++
+  side, with the translations, name mangling, etc. done automatically
+  by CLCXX and cl-cxx. The two Common Lisp functions taking care of
   translating the compiled C​++ definitions into cffi are =(cxx:init)=
   and =(cxx:add-package...)=
 
@@ -84,8 +84,9 @@ $ cd /tmp/examples
 The necessary files for the custom C++ library are located in the
 subfolder =custom-lib=. If additional libs are needed, put their
 header files into the =custom-lib/include= folder and add their
-reference to the file CMakeLists.txt as in a normal C++ project. See
-the commented parts of CMakeLists.txt for an example.
+reference to the file =/tmp/example/custom-lib/CMakeLists.txt= as in a
+normal C++ project. See the commented parts of CMakeLists.txt for an
+example.
 
 The C​++ source file is located in =custom-lib/src/my-lib.cpp= Here are
 its contents:
