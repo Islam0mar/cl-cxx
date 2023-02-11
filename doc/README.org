@@ -1,14 +1,16 @@
 * Introduction
 
-  This library provides an interface to C++ from Common Lisp. It was
-  inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar functionality as
-  python's [[https://github.com/pybind/pybind11][pybind11]] for Common Lisp.
-  
+  This library provides an interface to C++ from Common Lisp.
+
   As [[https://cffi.common-lisp.dev/][CFFI]] is normally used for C code, there are no builtin functions
   to deal with C++ extensions from Common Lisp like class definitions,
   their instantiation, accessing and defining member functions,
   etc. [[https://github.com/Islam0mar/cl-cxx][cl-cxx]] is an attempt to step in and facilitate easy interfacing
   from Common Lisp to C++ libs.
+
+  It was inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar
+  functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for Common Lisp.
+  
 
 * Architecture
 
