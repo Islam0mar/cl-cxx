@@ -74,8 +74,27 @@
 #+BEGIN_SRC bash
 
 $ cp -R examples /tmp/
+$ cd /tmp/examples
 
 #+END_SRC bash
+
+The necessary files for the custom C++ library are in the subfolder
+=custom-lib=. If additional libs are needed, put their header files
+into the =custom-lib/include= and add their reference to the file
+CMakeLists.txt as in a normal C++ project. See the commented parts of
+CMakeLists.txt for an example.
+
+The C​++ source file is located in =custom-lib/src/my-lib.cpp= Here are
+it's contents:
+
+#+BEGIN_SRC c
+
+include <clcxx.h>
+
+#+END_SRC bash
+
+
+Build the custom C++ library
 
   Following is a full example
 Examples - 2 or 3 end to end examples, with extensive documentation
