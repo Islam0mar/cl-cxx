@@ -96,10 +96,8 @@
   - Copy the folder with all contents to a location of your choice:
 
 #+BEGIN_SRC bash
-
 $ cp -R examples /tmp/
 $ cd /tmp/examples
-
 #+END_SRC
 
 The necessary files for the custom C++ library are located in the
@@ -114,7 +112,6 @@ header files into the =custom-lib/include= folder or optionally into
    are its contents:
 
 #+BEGIN_SRC c
-
 #include <string>
 #include "clcxx/clcxx.hpp"
 
@@ -154,7 +151,6 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
     .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
     .constructor<int, int>();
 }
-
 #+END_SRC
 
 
@@ -245,13 +241,11 @@ This will create the Common Lisp Constructor function
 ** Building the Library
 
 #+BEGIN_SRC bash
-
 $ cd /tmp/examples/my-lib
 $ mkdir build
 $ cd build
 $ cmake ..
 $ make
-
 #+END_SRC
 
 This should compile a shared library named =myLib.so= (maybe with
@@ -274,7 +268,6 @@ another extension according to your OS) and put it into the folder
    First we define both libs:
    
 #+BEGIN_SRC lisp
-
   ;;; change this to the load path of libClCxx
   (pushnew (pathname "/usr/local/lib/")
            cffi:*foreign-library-directories*
@@ -352,12 +345,6 @@ CL-USER​>
   
 * Help Wanted
 
-  please send bug reports, code to custom libs using the system,
-  etc. for expanding the user base.
-
-  - The first argument of add-package is the name of the Package
-  defined with =CLCXX​_PACKAGE= in the cpp file.
-
-- The second argument of add-package is the name of the common-lisp
-  package to define.
+  please send bug reports, suggestions, comments and code to custom
+  libs using the system, etc. for expanding the user base.
 
