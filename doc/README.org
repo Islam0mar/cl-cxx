@@ -15,11 +15,11 @@
   
 * Quickstart
 
-  - Install CLCXX into /usr/local/lib
+  - Install [[https://github.com/Islam0mar/CLCXX][CLCXX]] into /usr/local/lib
 
   - copy the =example= directory to =/tmp/example=
 
-  - with quicklisp installed do
+  - with [[https://www.quicklisp.org/beta/][quicklisp]] installed do
 
 #+BEGIN_SRC bash
   $ ln -s /tmp/example ~/quicklisp/local-projects
