@@ -31,9 +31,10 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defun("test-complex", F_PTR(&gr));
   pack.defun("ref-int", F_PTR(&ref_int));
   pack.defun("ref-class", F_PTR(&ref_class));
-  pack.defclass<xx, false>("xx")
+  pack.defclass<xx, false>("cl-xx")
     .member("y", &xx::y)
     .defmethod("foo", F_PTR(&xx::greet))
     .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
-    .constructor<int, int>("create-xx");
+    .constructor<int, int>()
+    ;
 }

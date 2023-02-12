@@ -4,6 +4,7 @@
 
 (in-package :my-cl-lib)
 
+(cl-test: )
 (cl-test:greet) -> "Hello, World"
 
 (defparameter *testclass* (cl-test:create-xx 10 20))

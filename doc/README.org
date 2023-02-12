@@ -128,11 +128,11 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defun("test-complex", F_PTR(&gr));
   pack.defun("ref-int", F_PTR(&ref_int));
   pack.defun("ref-class", F_PTR(&ref_class));
-  pack.defclass<xx, false>("xx")
+  pack.defclass<xx, false>("cl-xx")
     .member("y", &xx::y)
     .defmethod("foo", F_PTR(&xx::greet))
     .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
-    .constructor<int, int>("create-xx");
+    .constructor<int, int>();
 }
 
 #+END_SRC
@@ -170,41 +170,56 @@ Defines the Common Lisp function =#'cl-test:greet= to call the C++
 function =greet=.
 
 #+BEGIN_SRC c
-  pack.defclass<xx, false>("xx")
+  pack.defclass<xx, false>("cl-xx")
 #+END_SRC
 
-Defines a class framework of the C++ class =xx= for Common Lisp.
+Defines a class framework of the C​++ class =xx= for Common Lisp (named
+="cl-xx"= in Common Lisp). This creates bindings for the Common Lisp
+destructor function =#'cl-test:destruct-cl-xx=
 
 #+BEGIN_SRC c
   .member("y", &xx::y)
 #+END_SRC
 
-Define the member =#'cl-test:y=
+Define the member =#'cl-test:y= of the xx class. This creates
+bindinges for the Common Lisp getter and setter functions
+=#'cl-test:y.get= and =#'cl-test:y.set=.
 
 #+BEGIN_SRC c
-.defmethod("cl-name", fn-pointer c-method)
+  .defmethod("foo", F_PTR(&xx::greet))
 #+END_SRC
 
-the class's setter and getter functions are also defined this way:
+Defines the Common Lisp function =#'cl-test:foo= as the greet method
+of class xx. The Common Lisp functions binding methods will always
+take the instance of the class as first argument and the arguments of
+the C method as additional arguments (if any).
 
 #+BEGIN_SRC c
 .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
 #+END_SRC
 
-defines the methods #'cl-test:foo.x as getter and
-#'cl-test:foo.x.set as setter for the member x of class xx.
-
-.constructor defines a constructor function for Common-lisp
+An alternative way to define a getter function of the member x of
+class xx using a C​++ lambda expression.
 
 #+BEGIN_SRC c
-.constructor<int, int>("create-xx")
+.constructor<int, int>()
 #+END_SRC
 
-defines a Common Lisp
-constructor function #'cl-test:create-xx with two integer
-arguments.
+Define a constructor function for the class =xx=. The constructor
+function is automatically named =cl-test:create-cl-xx2=. The number at
+the end of the name specifies the number of arguments of the
+constructor function and is omitted when the constructor function
+takes no arguments.
 
+Alternatively you can specify a Common Lisp name of the constructor
+function explicitely:
 
+#+BEGIN_SRC c
+.constructor<int, int>("create-my-xx")
+#+END_SRC
+
+This will create the Common Lisp Constructor function
+=#'cl-test:create-my-xx=.
 
 ** Building the Library
 
