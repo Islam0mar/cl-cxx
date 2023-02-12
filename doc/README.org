@@ -284,7 +284,7 @@ another extension according to your OS) and put it into the folder
 #+END_SRC
 
    Finally we add all the bindings from C​++ to Common Lisp in the
-   newly created package "CL_TEST". This step is comparable to the
+   newly created package "CL-TEST". This step is comparable to the
    loading of a file containing =(defcfun ...)= and such in CFFI:
 
 #+BEGIN_SRC lisp
