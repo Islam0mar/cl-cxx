@@ -4,21 +4,33 @@
 
 (in-package :my-cl-lib)
 
-(cl-test: )
-(cl-test:greet) -> "Hello, World"
+(cl-test:greet)
+;;; -> "Hello, World"
 
-(defparameter *testclass* (cl-test:create-xx 10 20))
+(defparameter *testclass* (cl-test:create-cl-xx2 10 20))
+;;; -> *TESTCLASS*
 
 (cl-test:foo *testclass*)
+;;; -> "Hello, World"
 
 (cl-test:foo.x *testclass*)
+;;; -> 10
 
 (cl-test:y.get *testclass*)
+;;; -> 20
 
 (cl-test:y.set *testclass* 22)
+;;; ; No value
 
-;;; avoiding the leading cl-test:
+
+
+;;; import the symbols to avoid the leading cl-test: in the function
+;;; calls
 
 (use-package :cl-test)
 
 (greet)
+;;; -> "Hello, World"
+
+
+

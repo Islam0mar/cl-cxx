@@ -190,12 +190,13 @@ bindinges for the Common Lisp getter and setter functions
 #+END_SRC
 
 Defines the Common Lisp function =#'cl-test:foo= as the greet method
-of class xx. The Common Lisp functions binding methods will always
-take the instance of the class as first argument and the arguments of
-the C method as additional arguments (if any).
+of class xx. The Common Lisp functions binding C​++ class methods will
+always take the instance of the class (meaning a CFFI foreign pointer
+to it) as first argument and the arguments of the C method as
+additional arguments (if any).
 
 #+BEGIN_SRC c
-  pack.#define efmethod("foo.x", F_PTR([](xx x){return x.x;}))
+  pack.defmethod("foo.x", F_PTR([](xx x){return x.x;}))
 #+END_SRC
 
 An alternative way to define a getter function of the member x of
@@ -237,8 +238,90 @@ This should compile a shared library named =myLib.so= (maybe with
 another extension according to your OS) and put it into the folder
 =/tmp/example/my-lib/lib/=
 
-  Following is a full example
-Examples - 2 or 3 end to end examples, with extensive documentation
+** Using the Library from Common Lisp
+
+   In order to use the Library from Common Lisp refer to the file
+   =/tmp/example/load-lib.lisp=
+
+   The standard =CFFI= way of loading a lib is also used for
+   =cl-cxx=. Before loading the custom library, the CLCXX library has
+   to be loaded. We assume the library is located in
+   =/usr/local/lib=. Note that plain CLCXX from github will install it
+   in =~/.local/lib=. To install in /usr/local/lib instead, use =cmake
+   -DCMAKE_INSTALL_PREFIX=/usr/local ..= instead of =cmake ..= in the
+   build step of CLCXX.
+
+   First we define both libs:
+   
+#+BEGIN_SRC lisp
+
+;;; change this to the load path of libClCxx
+  (pushnew (pathname "/usr/local/lib/")
+           cffi:*foreign-library-directories*
+           :test #'equal)
+
+  (cffi:define-foreign-library clcxx
+      (t (:default "libClCxx")))
+
+  (pushnew (asdf:system-relative-pathname :my-cl-lib "custom-lib/lib/")
+           cffi:*foreign-library-directories*
+           :test #'equal)
+
+  (cffi:define-foreign-library my-lib
+    (t (:default "libMyLib")))
+#+END_SRC
+
+   Then we load them into CFFI:
+
+#+BEGIN_SRC lisp
+  (cffi:use-foreign-library clcxx)
+  (cffi:use-foreign-library my-lib)
+#+END_SRC
+
+  After this, CLCXX needs to be initialized:
+#+BEGIN_SRC lisp
+  (cxx:init)
+#+END_SRC
+
+   Finally we add all the bindings from C​++ to Common Lisp in the
+   newly created package "CL_TEST". This step is comparable to the
+   loading of a file containing =(defcfun ...)= and such in CFFI:
+
+#+BEGIN_SRC lisp
+  (cxx:add-package "CL-TEST" "TEST")
+#+END_SRC
+
+   After this step, all definitions of the C​++ file should be
+   available in Common Lisp.
+   
+** Exploring the example code
+   
+   The example code for the Common Lisp part is also located in the
+   =/tmp/example/= directory. To load it into lisp, make the example
+   directory visible to asdf or quicklisp. In quicklisp this can be
+   done like this:
+
+#+BEGIN_SRC bash
+
+$ ln -s /tmp/example ~/quicklisp/local-projects
+
+#+END_SRC
+
+  Then start up Common Lisp and load the project with:
+
+#+BEGIN_SRC lisp
+
+Cl-USER​> (ql:quickload "my-cl-lib")
+To load "my-cl-lib":
+  Load 1 ASDF system:
+    my-cl-lib
+; Loading "my-cl-lib"
+...............
+("my-cl-lib")
+CL-USER​> 
+
+#+END_SRC
+  
 
 * Future Direction
 
