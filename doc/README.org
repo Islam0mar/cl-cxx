@@ -119,47 +119,6 @@ class xx {
 void ref_class(xx& x) { x.y = 1000000; }
 
 // definitions of the API exposure to Common Lisp:
-//
-// CLCXX_PACKAGE defines a Common Lisp package which can be loaded by
-// Common Lisp with the command "(add-package "TEST" "CL-TEST")"
-//
-// The first argument of add-package is the name of the Package
-// defined with CLCXX_PACKAGE in the cpp file.
-//
-// The second argument of add-package is the name of the common-lisp
-// package to define.
-//
-// pack is the variable name referencing the package.
-//
-// The methods are:
-//
-// .defun (std::string "lisp-fn-name", fn-pointer c-fn)
-//
-// defines the Common Lisp function #'cl-test:lisp-fn-name to call
-// "c-fn" from the code above.
-//
-// .defclass<cname, false> ("lisp-class-name")
-//
-// defines a class accessor for Common Lisp
-//
-// .member("cl-name", class-pointer c-name)
-//
-// define a member of the class
-//
-// .defmethod("cl-name", fn-pointer c-method)
-//
-// the class's setter and getter functions are also defined this way:
-//
-// .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
-//
-// defines the methods #'cl-test:foo.x as getter and
-// #'cl-test:foo.x.set as setter for the member x of class xx.
-//
-// .constructor defines a constructor function for Common-lisp
-//
-// .constructor<int, int>("create-xx"); defines a Common Lisp
-// constructor function #'cl-test:create-xx with two integer
-// arguments.
 
 CLCXX_PACKAGE TEST(clcxx::Package& pack) {
   pack.defun("hi", F_PTR(&hi));
@@ -177,6 +136,74 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
 }
 
 #+END_SRC
+
+
+*** Definitions of the API exposure to Common Lisp
+
+    The API exposure to Common Lisp happens inside a =CLCXX_PACKAGE=
+    block of the C++ file. After compilation of the lib and its
+    loading from Common Lisp, all the definitions get pulled into a
+    custom, newly created Common Lisp package with the command
+    =add-package=. The command takes two arguments: The name defined
+    in the C++ file ("TEST" in the example) and the name of the Common
+    Lisp package to use ("CL-TEST" in the example).
+
+    The =CLCXX_PACKAGE= block defines the bindings of the C++
+    functions, classes, methods, members and constructors to Common
+    lisp functions. Everything *not* defined here will not be visible
+    by Common Lisp.
+    
+#+BEGIN_SRC c
+CLCXX_PACKAGE TEST(clcxx::Package& pack) {
+// ...
+}
+#+END_SRC
+
+Defines the package named =TEST=, using the package pointer =pack=.
+
+#+BEGIN_SRC c
+  pack.defun("greet", F_PTR(&greet));
+#+END_SRC
+
+Defines the Common Lisp function =#'cl-test:greet= to call the C++
+function =greet=.
+
+#+BEGIN_SRC c
+  pack.defclass<xx, false>("xx")
+#+END_SRC
+
+Defines a class framework of the C++ class =xx= for Common Lisp.
+
+#+BEGIN_SRC c
+  .member("y", &xx::y)
+#+END_SRC
+
+Define the member =#'cl-test:y=
+
+#+BEGIN_SRC c
+.defmethod("cl-name", fn-pointer c-method)
+#+END_SRC
+
+the class's setter and getter functions are also defined this way:
+
+#+BEGIN_SRC c
+.defmethod("foo.x", F_PTR([](xx x){return x.x;}))
+#+END_SRC
+
+defines the methods #'cl-test:foo.x as getter and
+#'cl-test:foo.x.set as setter for the member x of class xx.
+
+.constructor defines a constructor function for Common-lisp
+
+#+BEGIN_SRC c
+.constructor<int, int>("create-xx")
+#+END_SRC
+
+defines a Common Lisp
+constructor function #'cl-test:create-xx with two integer
+arguments.
+
+
 
 ** Building the Library
 
@@ -205,3 +232,10 @@ Examples - 2 or 3 end to end examples, with extensive documentation
 
   please send bug reports, code to custom libs using the system,
   etc. for expanding the user base.
+
+  - The first argument of add-package is the name of the Package
+  defined with =CLCXX​_PACKAGE= in the cpp file.
+
+- The second argument of add-package is the name of the common-lisp
+  package to define.
+
