@@ -13,6 +13,26 @@
   The code was inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar
   functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for the Common Lisp community.
   
+* Quickstart
+
+  - Install CLCXX into /usr/local/lib
+
+  - copy the =example= directory to =/tmp/example=
+
+  - with quicklisp installed do
+
+#+BEGIN_SRC bash
+  $ ln -s /tmp/example ~/quicklisp/local-projects
+#+END_SRC
+
+  - Start Common Lisp and issue
+
+#+BEGIN_SRC lisp
+  Cl-USER​> (ql:quickload "my-cl-lib")
+#+END_SRC
+
+  - Explore the example code in =/tmp/example/scratch.lisp=
+
 * Architecture
 
 ** Provided parts
@@ -298,8 +318,9 @@ another extension according to your OS) and put it into the folder
    
    The example code for the Common Lisp part is also located in the
    =/tmp/example/= directory. To load it into lisp, make the example
-   directory visible to asdf or quicklisp. In quicklisp this can be
-   done like this:
+   directory visible to asdf or quicklisp.
+
+   In quicklisp this can be done like this:
 
 #+BEGIN_SRC bash
 
@@ -321,7 +342,9 @@ To load "my-cl-lib":
 CL-USER​> 
 
 #+END_SRC
-  
+
+  Open the file =/tmp/example/scratch.lisp= to see and explore
+  commented examples of using the lib.
 
 * Future Direction
 
