@@ -255,13 +255,13 @@ another extension according to your OS) and put it into the folder
    
 #+BEGIN_SRC lisp
 
-;;; change this to the load path of libClCxx
+  ;;; change this to the load path of libClCxx
   (pushnew (pathname "/usr/local/lib/")
            cffi:*foreign-library-directories*
            :test #'equal)
 
   (cffi:define-foreign-library clcxx
-      (t (:default "libClCxx")))
+    (t (:default "libClCxx")))
 
   (pushnew (asdf:system-relative-pathname :my-cl-lib "custom-lib/lib/")
            cffi:*foreign-library-directories*
