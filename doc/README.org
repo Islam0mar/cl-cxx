@@ -145,8 +145,9 @@ CLCXX_PACKAGE TEST(clcxx::Package& pack) {
     loading from Common Lisp, all the definitions get pulled into a
     custom, newly created Common Lisp package with the command
     =add-package=. The command takes two arguments: The name defined
-    in the C++ file ("TEST" in the example) and the name of the Common
-    Lisp package to use ("CL-TEST" in the example).
+    in the C++ file ("TEST" in the example above) and the name of the
+    Common Lisp package to use ("CL-TEST" in the Common Lisp example
+    below).
 
     The =CLCXX_PACKAGE= block defines the bindings of the C++
     functions, classes, methods, members and constructors to Common
