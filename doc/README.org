@@ -259,13 +259,13 @@ another extension according to your OS) and put it into the folder
 
    The standard =CFFI= way of loading a lib is also used for
    =cl-cxx=. Before loading the custom library, the CLCXX library has
-   to be loaded. We assume the library is located in
+   to be loaded. The lisp code assumes the library is located in
    =/usr/local/lib=. Note that plain CLCXX from github will install it
    in =~/.local/lib=. To install in /usr/local/lib instead, use =cmake
    -DCMAKE_INSTALL_PREFIX=/usr/local ..= instead of =cmake ..= in the
    build step of CLCXX.
 
-   First we define both libs:
+   First both libs are defined:
    
 #+BEGIN_SRC lisp
   ;;; change this to the load path of libClCxx
@@ -284,7 +284,7 @@ another extension according to your OS) and put it into the folder
     (t (:default "libMyLib")))
 #+END_SRC
 
-   Then we load them into CFFI:
+   Then the libs are loaded into CFFI:
 
 #+BEGIN_SRC lisp
   (cffi:use-foreign-library clcxx)
@@ -292,13 +292,15 @@ another extension according to your OS) and put it into the folder
 #+END_SRC
 
   After this, CLCXX needs to be initialized:
+  
 #+BEGIN_SRC lisp
   (cxx:init)
 #+END_SRC
 
-   Finally we add all the bindings from C​++ to Common Lisp in the
-   newly created package "CL-TEST". This step is comparable to the
-   loading of a file containing =(defcfun ...)= and such in CFFI:
+   Finally all the bindings from C​++ to Common Lisp are defined and
+   added to the newly created package "CL-TEST". This step is
+   comparable to the loading of a file containing =(defcfun ...)= and
+   such in CFFI:
 
 #+BEGIN_SRC lisp
   (cxx:add-package "CL-TEST" "TEST")
@@ -316,24 +318,20 @@ another extension according to your OS) and put it into the folder
    In quicklisp this can be done like this:
 
 #+BEGIN_SRC bash
-
-$ ln -s /tmp/example ~/quicklisp/local-projects
-
+  $ ln -s /tmp/example ~/quicklisp/local-projects
 #+END_SRC
 
   Then start up Common Lisp and load the project with:
 
 #+BEGIN_SRC lisp
-
-Cl-USER​> (ql:quickload "my-cl-lib")
-To load "my-cl-lib":
-  Load 1 ASDF system:
-    my-cl-lib
-; Loading "my-cl-lib"
-...............
-("my-cl-lib")
-CL-USER​> 
-
+  Cl-USER​> (ql:quickload "my-cl-lib")
+  To load "my-cl-lib":
+    Load 1 ASDF system:
+      my-cl-lib
+  ; Loading "my-cl-lib"
+  ...............
+  ("my-cl-lib")
+  CL-USER​> 
 #+END_SRC
 
   Open the file =/tmp/example/scratch.lisp= to see and explore
