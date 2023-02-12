@@ -178,7 +178,7 @@ Defines a class framework of the C​++ class =xx= for Common Lisp (named
 destructor function =#'cl-test:destruct-cl-xx=
 
 #+BEGIN_SRC c
-  .member("y", &xx::y)
+  pack.member("y", &xx::y)
 #+END_SRC
 
 Define the member =#'cl-test:y= of the xx class. This creates
@@ -186,7 +186,7 @@ bindinges for the Common Lisp getter and setter functions
 =#'cl-test:y.get= and =#'cl-test:y.set=.
 
 #+BEGIN_SRC c
-  .defmethod("foo", F_PTR(&xx::greet))
+  pack.defmethod("foo", F_PTR(&xx::greet))
 #+END_SRC
 
 Defines the Common Lisp function =#'cl-test:foo= as the greet method
@@ -195,14 +195,14 @@ take the instance of the class as first argument and the arguments of
 the C method as additional arguments (if any).
 
 #+BEGIN_SRC c
-.defmethod("foo.x", F_PTR([](xx x){return x.x;}))
+  pack.#define efmethod("foo.x", F_PTR([](xx x){return x.x;}))
 #+END_SRC
 
 An alternative way to define a getter function of the member x of
 class xx using a C​++ lambda expression.
 
 #+BEGIN_SRC c
-.constructor<int, int>()
+  pack.constructor<int, int>()
 #+END_SRC
 
 Define a constructor function for the class =xx=. The constructor
@@ -215,7 +215,7 @@ Alternatively you can specify a Common Lisp name of the constructor
 function explicitely:
 
 #+BEGIN_SRC c
-.constructor<int, int>("create-my-xx")
+  pack.constructor<int, int>("create-my-xx")
 #+END_SRC
 
 This will create the Common Lisp Constructor function
