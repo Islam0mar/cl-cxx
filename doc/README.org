@@ -22,11 +22,7 @@
   - Build the library with
     
 #+BEGIN_SRC bash
-$ cd /tmp/examples/my-lib
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+$ cd /tmp/examples/my-lib && mkdir build && cd build && cmake .. && make
 #+END_SRC
     
   - with [[https://www.quicklisp.org/beta/][quicklisp]] installed do
