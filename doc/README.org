@@ -15,7 +15,7 @@
   
 * Quickstart
 
-  - Install [[https://github.com/Islam0mar/CLCXX][CLCXX]] into /usr/local/lib
+  - Install [[https://github.com/Islam0mar/CLCXX][CLCXX]] into =/usr/local/lib=
 
   - copy the =example= directory to =/tmp/example=
 
@@ -196,7 +196,7 @@ function =greet=.
 #+END_SRC
 
 Defines a class framework of the C​++ class =xx= for Common Lisp (named
-="cl-xx"= in Common Lisp). This creates bindings for the Common Lisp
+=cl-xx= in Common Lisp). This creates bindings for the Common Lisp
 destructor function =#'cl-test:destruct-cl-xx=
 
 #+BEGIN_SRC c
