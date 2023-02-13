@@ -267,9 +267,9 @@ another extension according to your OS) and put it into the folder
    =cl-cxx=. Before loading the custom library, the CLCXX library has
    to be loaded. The lisp code assumes the library is located in
    =/usr/local/lib=. Note that plain CLCXX from github will install it
-   in =~/.local/lib=. To install in /usr/local/lib instead, use =cmake
-   -DCMAKE_INSTALL_PREFIX=/usr/local ..= instead of =cmake ..= in the
-   build step of CLCXX.
+   in =~/.local/lib=. To install in =/usr/local/lib= instead, use
+   =cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..= instead of =cmake ..=
+   in the build step of CLCXX.
 
    First both libs are defined:
    
