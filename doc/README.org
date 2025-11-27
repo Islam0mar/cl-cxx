@@ -1,0 +1,354 @@
+* Introduction
+
+  This library provides an interface to C++ from Common Lisp.
+
+  As [[https://cffi.common-lisp.dev/][CFFI]] is normally used for C code, there are no builtin functions
+  to deal with C++ extensions from Common Lisp like class definitions,
+  their instantiation, accessing and defining member functions,
+  etc. [[https://github.com/Islam0mar/cl-cxx][cl-cxx]] is an attempt to step in and facilitate easy interfacing
+  from Common Lisp to C​++ libs. It uses CFFI under the hood, but
+  generates its definitions automagically from C​++ code written by
+  the user.
+
+  The code was inspired by Julia's [[https://github.com/JuliaInterop/CxxWrap.jl][CxxWrap]] and provides a similar
+  functionality as python's [[https://github.com/pybind/pybind11][pybind11]] for the Common Lisp community.
+  
+* Quickstart
+
+  - Install [[https://github.com/Islam0mar/CLCXX][CLCXX]] into =/usr/local/lib=
+
+  - copy the =example= directory to =/tmp/example=
+
+  - Build the library with
+    
+#+BEGIN_SRC bash
+$ cd /tmp/examples/my-lib && mkdir build && cd build && cmake .. && make
+#+END_SRC
+    
+  - with [[https://www.quicklisp.org/beta/][quicklisp]] installed do
+
+#+BEGIN_SRC bash
+  $ ln -s /tmp/example ~/quicklisp/local-projects
+#+END_SRC
+
+  - Start Common Lisp and issue
+
+#+BEGIN_SRC lisp
+  Cl-USER​> (ql:quickload "my-cl-lib")
+#+END_SRC
+
+  - Explore the example code in =/tmp/example/scratch.lisp=
+
+* Architecture
+
+** Provided parts
+
+  The provided architecture consists of two parts:
+
+  - [[https://github.com/Islam0mar/CLCXX][CLCXX]]
+
+     A C​++ library which gets compiled once and installed systemwide,
+     visible by the C++ toolchain.
+
+  - [[https://github.com/Islam0mar/cl-cxx][cl-cxx]]
+
+    The Common Lisp part, which translates the definitions of the
+    custom C​++ library (see below) to CFFI code suitable to be used
+    directly from Common Lisp.
+
+  In addition existing C++ Libraries and their header files can be
+  included in case they are targeted.
+  
+** Custom parts
+
+   There are also two user-defined parts:
+
+  - A custom C​++ library
+
+    This contains the C​++ code to be exposed to Lisp, custom
+    definitions or glue code to existing libraries, the API bindings,
+    package name definitions for the Lisp side, the Lisp names of
+    functions, methods, member functions, etc...
+  
+  - The custom Common Lisp code
+
+    This contains the code to load the foreign libraries and
+    initialize the cl-cxx system and package definitions from the C++
+    lib to be accessible by Lisp. In addition this code can also
+    contain macros and such to make the API "lispier", as it is common
+    for CFFI related packages.
+
+  The following diagram shows the relation of the different parts:
+  
+  [[./block-diagram.svg]]
+
+  
+  Note that with this design, the definition of functions, structs,
+  etc. is *not* done by the user on the Lisp side, as it is the case
+  when working with standard CFFI directly, but rather on the C​++
+  side, with the translations, name mangling, etc. done automatically
+  by CLCXX and cl-cxx. The two Common Lisp functions taking care of
+  translating the compiled C​++ definitions into cffi are =(cxx:init)=
+  and =(cxx:add-package...)=
+
+* Examples
+
+  The =example= folder contains a full example. It can be used as a
+  skeleton for a new project. The necessary steps to make the example
+  work are explained using linux commands. Please translate them into
+  the corresponding commands for your OS.
+
+** Setup
+  - Copy the folder with all contents to a location of your choice:
+
+#+BEGIN_SRC bash
+$ cp -R examples /tmp/
+$ cd /tmp/examples
+#+END_SRC
+
+The necessary files for the custom C++ library are located in the
+subfolder =custom-lib=. If additional libs are needed, put their
+header files into the =custom-lib/include= folder or optionally into
+=custom-lib/modules= and add their reference to the file
+=/tmp/example/custom-lib/CMakeLists.txt= as in a normal C++ project.
+
+** The C​++ source file
+
+   The C​++ source file is located in =custom-lib/src/my-lib.cpp= Here
+   are its contents:
+
+#+BEGIN_SRC c
+#include <string>
+#include "clcxx/clcxx.hpp"
+
+// standard C function definitions
+
+std::string greet() { return "Hello, World"; }
+int Int(int x) { return x + 100; }
+float Float(float y) { return y + 100.34; }
+auto gr(std::complex<float> x) { return x; }
+std::string hi(char* s) { return std::string("hi, " + std::string(s)); }
+void ref_int(int& x) { x += 30; }
+
+// standard C++ class definition with members and method
+
+class xx {
+ public:
+  xx(int xx, int yy) : y(yy), x(xx) {}
+  std::string greet() { return "Hello, World"; }
+  int y;
+  int x;
+};
+void ref_class(xx& x) { x.y = 1000000; }
+
+// definitions of the API exposure to Common Lisp
+
+CLCXX_PACKAGE TEST(clcxx::Package& pack) {
+  pack.defun("hi", F_PTR(&hi));
+  pack.defun("test-int", F_PTR(&Int));
+  pack.defun("greet", F_PTR(&greet));
+  pack.defun("test-float", F_PTR(&Float));
+  pack.defun("test-complex", F_PTR(&gr));
+  pack.defun("ref-int", F_PTR(&ref_int));
+  pack.defun("ref-class", F_PTR(&ref_class));
+  pack.defclass<xx, false>("cl-xx")
+    .member("y", &xx::y)
+    .defmethod("foo", F_PTR(&xx::greet))
+    .defmethod("foo.x", F_PTR([](xx x){return x.x;}))
+    .constructor<int, int>();
+}
+#+END_SRC
+
+
+*** Definitions of the API exposure to Common Lisp
+
+    The API exposure to Common Lisp happens inside a =CLCXX_PACKAGE=
+    block of the C++ file. After compilation of the lib and its
+    loading from Common Lisp, all the definitions get pulled into a
+    custom, newly created Common Lisp package with the command
+    =add-package=. The command takes two arguments: The name defined
+    in the C++ file ("TEST" in the example above) and the name of the
+    Common Lisp package to use ("CL-TEST" in the Common Lisp example
+    below).
+
+    The =CLCXX_PACKAGE= block defines the bindings of the C++
+    functions, classes, methods, members and constructors to Common
+    lisp functions. Everything *not* defined here will not be visible
+    by Common Lisp.
+    
+#+BEGIN_SRC c
+CLCXX_PACKAGE TEST(clcxx::Package& pack) {
+// ...
+}
+#+END_SRC
+
+Defines the package named =TEST=, using the package pointer =pack=.
+
+#+BEGIN_SRC c
+  pack.defun("greet", F_PTR(&greet));
+#+END_SRC
+
+Defines the Common Lisp function =#'cl-test:greet= to call the C++
+function =greet=.
+
+#+BEGIN_SRC c
+  pack.defclass<xx, false>("cl-xx")
+#+END_SRC
+
+Defines a class framework of the C​++ class =xx= for Common Lisp (named
+=cl-xx= in Common Lisp). This creates bindings for the Common Lisp
+destructor function =#'cl-test:destruct-cl-xx=
+
+#+BEGIN_SRC c
+  pack.member("y", &xx::y)
+#+END_SRC
+
+Define the member =#'cl-test:y= of the xx class. This creates
+bindinges for the Common Lisp getter and setter functions
+=#'cl-test:y.get= and =#'cl-test:y.set=.
+
+#+BEGIN_SRC c
+  pack.defmethod("foo", F_PTR(&xx::greet))
+#+END_SRC
+
+Defines the Common Lisp function =#'cl-test:foo= as the greet method
+of class xx. The Common Lisp functions binding C​++ class methods will
+always take the instance of the class (meaning a CFFI foreign pointer
+to it) as first argument and the arguments of the C method as
+additional arguments (if any).
+
+#+BEGIN_SRC c
+  pack.defmethod("foo.x", F_PTR([](xx x){return x.x;}))
+#+END_SRC
+
+An alternative way to define a getter function of the member x of
+class xx using a C​++ lambda expression.
+
+#+BEGIN_SRC c
+  pack.constructor<int, int>()
+#+END_SRC
+
+Define a constructor function for the class =xx=. The constructor
+function is automatically named =cl-test:create-cl-xx2=. The number at
+the end of the name specifies the number of arguments of the
+constructor function and is omitted when the constructor function
+takes no arguments.
+
+Alternatively you can specify a Common Lisp name of the constructor
+function explicitely:
+
+#+BEGIN_SRC c
+  pack.constructor<int, int>("create-my-xx")
+#+END_SRC
+
+This will create the Common Lisp Constructor function
+=#'cl-test:create-my-xx=.
+
+** Building the Library
+
+#+BEGIN_SRC bash
+$ cd /tmp/examples/my-lib
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+#+END_SRC
+
+This should compile a shared library named =myLib.so= (maybe with
+another extension according to your OS) and put it into the folder
+=/tmp/example/my-lib/lib/=
+
+** Using the Library from Common Lisp
+
+   In order to use the Library from Common Lisp refer to the file
+   =/tmp/example/load-lib.lisp=
+
+   The standard =CFFI= way of loading a lib is also used for
+   =cl-cxx=. Before loading the custom library, the CLCXX library has
+   to be loaded. The lisp code assumes the library is located in
+   =/usr/local/lib=. Note that plain CLCXX from github will install it
+   in =~/.local/lib=. To install in =/usr/local/lib= instead, use
+   =cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..= instead of =cmake ..=
+   in the build step of CLCXX.
+
+   First both libs are defined:
+   
+#+BEGIN_SRC lisp
+  ;;; change this to the load path of libClCxx
+  (pushnew (pathname "/usr/local/lib/")
+           cffi:*foreign-library-directories*
+           :test #'equal)
+
+  (cffi:define-foreign-library clcxx
+    (t (:default "libClCxx")))
+
+  (pushnew (asdf:system-relative-pathname :my-cl-lib "custom-lib/lib/")
+           cffi:*foreign-library-directories*
+           :test #'equal)
+
+  (cffi:define-foreign-library my-lib
+    (t (:default "libMyLib")))
+#+END_SRC
+
+   Then the libs are loaded into CFFI:
+
+#+BEGIN_SRC lisp
+  (cffi:use-foreign-library clcxx)
+  (cffi:use-foreign-library my-lib)
+#+END_SRC
+
+  After this, CLCXX needs to be initialized:
+  
+#+BEGIN_SRC lisp
+  (cxx:init)
+#+END_SRC
+
+   Finally all the bindings from C​++ to Common Lisp are defined and
+   added to the newly created package "CL-TEST". This step is
+   comparable to the loading of a file containing =(defcfun ...)= and
+   such in CFFI:
+
+#+BEGIN_SRC lisp
+  (cxx:add-package "CL-TEST" "TEST")
+#+END_SRC
+
+   After this step, all definitions of the C​++ file should be
+   available in Common Lisp.
+   
+** Exploring the example code
+   
+   The example code for the Common Lisp part is also located in the
+   =/tmp/example/= directory. To load it into lisp, make the example
+   directory visible to asdf or quicklisp.
+
+   In quicklisp this can be done like this:
+
+#+BEGIN_SRC bash
+  $ ln -s /tmp/example ~/quicklisp/local-projects
+#+END_SRC
+
+  Then start up Common Lisp and load the project with:
+
+#+BEGIN_SRC lisp
+  Cl-USER​> (ql:quickload "my-cl-lib")
+  To load "my-cl-lib":
+    Load 1 ASDF system:
+      my-cl-lib
+  ; Loading "my-cl-lib"
+  ...............
+  ("my-cl-lib")
+  CL-USER​> 
+#+END_SRC
+
+  Open the file =/tmp/example/scratch.lisp= to see and explore
+  commented examples of using the lib.
+
+* Future Direction
+
+  none yet...
+  
+* Help Wanted
+
+  please send bug reports, suggestions, comments and code to custom
+  libs using the system, etc. for expanding the user base.
+

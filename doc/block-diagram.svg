@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="169.46239mm"
+   height="128.9319mm"
+   viewBox="0 0 169.46238 128.9319"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="block-diagram.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1893044"
+     inkscape:cx="124.8629"
+     inkscape:cy="155.55311"
+     inkscape:window-width="1920"
+     inkscape:window-height="1058"
+     inkscape:window-x="0"
+     inkscape:window-y="2"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Ebene 3"
+     transform="translate(5.2074641,6.7794389)">
+    <rect
+       style="opacity:1;fill:#ececec;stroke:#e6e6e6;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers stroke fill"
+       id="rect2086"
+       width="168.93323"
+       height="128.40274"
+       x="-4.9428806"
+       y="-6.5148554" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Ebene 2"
+     style="display:inline"
+     transform="translate(-9.7334579,-50.793281)">
+    <rect
+       style="fill:#d5ffd5;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers stroke fill"
+       id="rect1389"
+       width="158.08546"
+       height="74.744652"
+       x="15.205505"
+       y="100.35999" />
+    <rect
+       style="fill:#ffeeaa;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers stroke fill"
+       id="rect1445"
+       width="158.17358"
+       height="23.34972"
+       x="15.205505"
+       y="72.845337" />
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="120.28038"
+       y="-166.83003"
+       id="text1449"
+       transform="rotate(90)"><tspan
+         sodipodi:role="line"
+         id="tspan1447"
+         style="font-size:5.64444px;stroke:none;stroke-width:0.264583px"
+         x="120.28038"
+         y="-166.83003">user defined</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.64444px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="73.835167"
+       y="-166.496"
+       id="text1453"
+       transform="rotate(90)"><tspan
+         sodipodi:role="line"
+         id="tspan1451"
+         style="font-size:5.64444px;stroke:none;stroke-width:0.264583px"
+         x="73.835167"
+         y="-166.496">provided</tspan></text>
+  </g>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     transform="translate(-9.7334579,-50.793281)">
+    <g
+       id="g1372"
+       transform="translate(0,-10.583334)">
+      <rect
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+         id="rect128"
+         width="28.5802"
+         height="9.1260004"
+         x="18.22188"
+         y="90.424721" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="23.338354"
+         y="95.650879"
+         id="text292"><tspan
+           sodipodi:role="line"
+           id="tspan290"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="23.338354"
+           y="95.650879">targeted C++ lib</tspan></text>
+      <rect
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+         id="rect397"
+         width="28.5802"
+         height="9.1260004"
+         x="48.840271"
+         y="90.526016" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="58.478714"
+         y="95.755966"
+         id="text401"><tspan
+           sodipodi:role="line"
+           id="tspan399"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="58.478714"
+           y="95.755966">libClCxx</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="41.260334"
+       y="64.841965"
+       id="text411"><tspan
+         sodipodi:role="line"
+         id="tspan409"
+         style="font-size:8.46667px;fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="41.260334"
+         y="64.841965">C++</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="100.92107"
+       y="64.841965"
+       id="text415"><tspan
+         sodipodi:role="line"
+         id="tspan413"
+         style="font-size:8.46667px;fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="100.92107"
+         y="64.841965">Common Lisp</tspan></text>
+    <g
+       id="g1387"
+       transform="translate(0.3809576)">
+      <rect
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+         id="rect391"
+         width="44.180386"
+         height="33.946629"
+         x="25.350025"
+         y="105.95597" />
+      <text
+         xml:space="preserve"
+         style="font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="26.999687"
+         y="114.41312"
+         id="text395"><tspan
+           sodipodi:role="line"
+           id="tspan393"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="114.41312">include &lt;targeted C++ lib.h&gt;</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="117.9409"
+           id="tspan403">include &lt;ClCxx.h&gt;</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="121.46869"
+           id="tspan421" /><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="124.99648"
+           id="tspan423">Class Definitions, etc... </tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="128.52426"
+           id="tspan425">of targeted C++ lib,</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="132.05205"
+           id="tspan452">their Common Lisp names,</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="135.57985"
+           id="tspan1356">the &quot;CUSTOM_PACKAGE&quot; name,...</tspan><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="139.10764"
+           id="tspan405" /><tspan
+           sodipodi:role="line"
+           style="fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="26.999687"
+           y="142.63542"
+           id="tspan407" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="37.700722"
+         y="109.0607"
+         id="text419"><tspan
+           sodipodi:role="line"
+           id="tspan417"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="37.700722"
+           y="109.0607">custom C++ lib</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:0.793749, 0.793749;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 82.223619,50.958137 V 179.66753"
+       id="path590"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+       id="rect1269"
+       width="74.243965"
+       height="62.781322"
+       x="87.101036"
+       y="105.95597" />
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:Calibri;text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="88.911819"
+       y="114.41312"
+       id="text1287"><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="114.41312"
+         id="tspan1275">(asdf:load :cffi)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="117.9409"
+         id="tspan1315">(asdf:load :cxx)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="121.46869"
+         id="tspan1298">(use-package :cffi)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="124.99648"
+         id="tspan1323">(use-package :cxx)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="128.52426"
+         id="tspan1325" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="132.05205"
+         id="tspan1337">(cffi:define-foreign-library clcxx</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="135.57985"
+         id="tspan1344">    (t (:default &quot;libClCxx&quot;)))</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="139.10764"
+         id="tspan1346">(cffi:define-foreign-library my-custom-lib</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="142.63542"
+         id="tspan1348">    (t (:default &quot;customC++Lib&quot;)))</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="146.16321"
+         id="tspan1350" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="149.69099"
+         id="tspan1331">(cffi:use-foreign-library clcxx)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="153.21878"
+         id="tspan1333">(cffi:use-foreign-library my-custom-lib)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="156.74657"
+         id="tspan1335" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="160.27435"
+         id="tspan1352">(cxx:init)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="163.80214"
+         id="tspan1354">(cxx:add-package &quot;CUSTOM-PACKAGE&quot; &quot;CUSTOM_PACKAGE&quot;)</tspan><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="167.32993"
+         id="tspan1313" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="170.85771"
+         id="tspan1309" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="174.38551"
+         id="tspan1311" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="177.9133"
+         id="tspan1305" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="181.44109"
+         id="tspan1283" /><tspan
+         sodipodi:role="line"
+         style="fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="88.911819"
+         y="184.96887"
+         id="tspan1285" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+       x="115.7291"
+       y="109.0607"
+       id="text1291"><tspan
+         sodipodi:role="line"
+         id="tspan1289"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+         x="115.7291"
+         y="109.0607">custom cl code</tspan></text>
+    <g
+       id="g1364"
+       transform="translate(12.938621,-10.583334)">
+      <rect
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+         id="rect458"
+         width="28.5802"
+         height="9.1260004"
+         x="81.119057"
+         y="90.526016" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="92.126053"
+         y="95.755966"
+         id="text462"><tspan
+           sodipodi:role="line"
+           id="tspan460"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="92.126053"
+           y="95.755966">cl-cxx</tspan></text>
+      <rect
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:0.529167;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+         id="rect1317"
+         width="28.5802"
+         height="9.1260004"
+         x="112.86951"
+         y="90.526016" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:2.82223px;line-height:125%;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';text-decoration:none;text-decoration-line:none;text-decoration-color:#000000;letter-spacing:0px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stop-color:#000000"
+         x="125.40923"
+         y="95.755966"
+         id="text1321"><tspan
+           sodipodi:role="line"
+           id="tspan1319"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:'Calibri Bold';fill:#000000;stroke:none;stroke-width:0.264583px"
+           x="125.40923"
+           y="95.755966">cffi</tspan></text>
+    </g>
+  </g>
+</svg>
