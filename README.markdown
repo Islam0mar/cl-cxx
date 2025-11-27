@@ -2,6 +2,8 @@
 
 This library provides an interface to C++ from lisp. It was inspired by Julia's [libcxxwrap](https://github.com/JuliaInterop/libcxxwrap-julia).
 
+For a complete overview, refer to the [documentation](doc/README.org)/[example](example).
+
 ## Prerequisites
 
 - [CLCXX](https://github.com/Islam0mar/CLCXX) is installed
